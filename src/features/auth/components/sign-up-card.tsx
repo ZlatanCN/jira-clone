@@ -9,26 +9,22 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
-
-const formSchema = z.object({
-  name: z.string().trim().min(1, "请输入用户名"),
-  email: z.string().email("邮箱格式错误"),
-  password: z.string().min(6, "长度不能少于6位").max(16, "长度不能大于16位"),
-});
-
-const onSubmit = (data: z.infer<typeof formSchema>) => {
-  console.log(data)
-}
+import { registerSchema } from '../schemas'
+import { useRegister } from '@/features/auth/api/use-register'
 
 const SignUpCard = () => {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const { mutate } = useRegister()
+  const form = useForm<z.infer<typeof registerSchema>>({
+    resolver: zodResolver(registerSchema),
     defaultValues: {
       name: "",
       email: "",
       password: "",
     },
   })
+  const onSubmit = (data: z.infer<typeof registerSchema>) => {
+    mutate({ json: data })
+  }
   return (
     <Card className="w-full h-full md:w-[487px] border-none shadow-none">
       <CardHeader className="flex items-center justify-center text-center p-7">
