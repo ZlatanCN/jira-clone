@@ -1,31 +1,30 @@
-import Link from 'next/link'
-import { Card, CardTitle, CardHeader, CardContent } from "@/components/ui/card"
+import { Card, CardTitle, CardHeader, CardContent, CardDescription } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { DottedSeparator } from "@/components/dotted-separator"
-// import { FcGoogle } from "react-icons/fc"
-// import { SiMicrosoft } from 'react-icons/si';
 import { FaWeixin } from 'react-icons/fa';
 import { SiTencentqq } from 'react-icons/si';
-// import { FaGithub } from "react-icons/fa"
+import Link from 'next/link'
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 
 const formSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(1, "请输入密码"),
+  name: z.string().trim().min(1, "请输入用户名"),
+  email: z.string().email("邮箱格式错误"),
+  password: z.string().min(6, "长度不能少于6位").max(16, "长度不能大于16位"),
 });
 
 const onSubmit = (data: z.infer<typeof formSchema>) => {
   console.log(data)
 }
 
-const SignInCard = () => {
+const SignUpCard = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      name: "",
       email: "",
       password: "",
     },
@@ -34,8 +33,24 @@ const SignInCard = () => {
     <Card className="w-full h-full md:w-[487px] border-none shadow-none">
       <CardHeader className="flex items-center justify-center text-center p-7">
         <CardTitle className="text-2xl">
-          登录
+          注册
         </CardTitle>
+        <CardDescription>
+          注册表明你已经阅读并同意
+          <Link href="/terms" className="text-blue-500 ml-1">
+            服务条款
+          </Link>
+          {" "}和
+          <Link href="/privacy" className="text-blue-500 ml-1">
+            隐私政策
+          </Link>
+        </CardDescription>
+        {/* <CardDescription className="text-sm text-gray-500 mt-2">
+          已有账号？
+          <Link href="/sign-in" className="text-blue-500 ml-1">
+            登录
+          </Link>
+        </CardDescription> */}
       </CardHeader>
       <div className="px-7">
         <DottedSeparator />
@@ -43,6 +58,23 @@ const SignInCard = () => {
       <CardContent className="p-7">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              name="name"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder="请输入用户名"
+                      type="text"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            >
+            </FormField>
             <FormField
               name="email"
               control={form.control}
@@ -57,7 +89,6 @@ const SignInCard = () => {
                   </FormControl>
                   <FormMessage />
                 </FormItem>
-
               )}
             >
             </FormField>
@@ -79,10 +110,11 @@ const SignInCard = () => {
             >
             </FormField>
             <Button className="w-full" size="lg" disabled={false}>
-              登录
+              注册
             </Button>
           </form>
         </Form>
+
       </CardContent>
       <div className="px-7">
         <DottedSeparator />
@@ -102,9 +134,9 @@ const SignInCard = () => {
       </div>
       <CardContent className="p-7 flex items-center justify-center text-center">
         <p>
-          还没有账号？
-          <Link href="/sign-up" className="text-blue-500">
-            &nbsp;注册
+          已有账号？
+          <Link href="/sign-in" className="text-blue-500">
+            &nbsp;登录
           </Link>
         </p>
       </CardContent>
@@ -113,4 +145,4 @@ const SignInCard = () => {
   )
 }
 
-export default SignInCard
+export default SignUpCard
