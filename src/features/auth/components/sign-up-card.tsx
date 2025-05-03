@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Card,
   CardContent,
@@ -25,7 +27,7 @@ import { registerSchema } from '../schemas';
 import { useRegister } from '@/features/auth/api/use-register';
 
 const SignUpCard = () => {
-  const { mutate } = useRegister();
+  const { mutate, isPending } = useRegister();
 
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
@@ -120,7 +122,7 @@ const SignUpCard = () => {
               )}
             >
             </FormField>
-            <Button className="w-full" size="lg" disabled={false}>
+            <Button className="w-full" size="lg" disabled={isPending}>
               注册
             </Button>
           </form>
@@ -132,12 +134,12 @@ const SignUpCard = () => {
       </div>
       <CardContent className="p-7 flex flex-col gap-y-4">
         <Button variant="secondary" className="w-full" size="lg"
-                disabled={false}>
+                disabled={isPending}>
           <FaWeixin className="mr-2 size-5"/>
           微信
         </Button>
         <Button variant="secondary" className="w-full" size="lg"
-                disabled={false}>
+                disabled={isPending}>
           <SiTencentqq className="mr-2 size-5"/>
           QQ
         </Button>

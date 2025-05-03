@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -22,7 +24,7 @@ import { loginSchema } from '../schemas';
 import { useLogin } from '@/features/auth/api/use-login';
 
 const SignInCard = () => {
-  const { mutate } = useLogin();
+  const { mutate, isPending } = useLogin();
 
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -86,7 +88,7 @@ const SignInCard = () => {
               )}
             >
             </FormField>
-            <Button className="w-full" size="lg" disabled={false}>
+            <Button className="w-full" size="lg" disabled={isPending}>
               登录
             </Button>
           </form>
@@ -97,12 +99,12 @@ const SignInCard = () => {
       </div>
       <CardContent className="p-7 flex flex-col gap-y-4">
         <Button variant="secondary" className="w-full" size="lg"
-                disabled={false}>
+                disabled={isPending}>
           <FaWeixin className="mr-2 size-5"/>
           微信
         </Button>
         <Button variant="secondary" className="w-full" size="lg"
-                disabled={false}>
+                disabled={isPending}>
           <SiTencentqq className="mr-2 size-5"/>
           QQ
         </Button>
