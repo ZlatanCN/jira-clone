@@ -1,5 +1,8 @@
 import { getCurrent } from '@/features/auth/actions';
 import { redirect } from 'next/navigation';
+import {
+  CreateWorkspaceForm,
+} from '@/features/workspaces/components/create-workspace-form';
 
 export default async function Home () {
   const user = await getCurrent();
@@ -10,7 +13,7 @@ export default async function Home () {
 
   return (
     <div>
-      这里是主页
+      <CreateWorkspaceForm/>
     </div>
   );
 }
