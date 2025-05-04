@@ -19,6 +19,10 @@ import { Button } from '@/components/ui/button';
 import {
   useCreateWorkspace,
 } from '@/features/workspaces/api/use-create-workspace';
+import React, { useRef } from 'react';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import Image from 'next/image';
+import { ImageIcon } from 'lucide-react';
 
 interface CreateWorkspaceFormProps {
   onCancel?: () => void;
@@ -26,16 +30,37 @@ interface CreateWorkspaceFormProps {
 
 const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
   const { mutate, isPending } = useCreateWorkspace();
-
+  const inputRef = useRef<HTMLInputElement>(null);
   const form = useForm<z.infer<typeof createWorkspaceSchema>>({
     resolver: zodResolver(createWorkspaceSchema),
     defaultValues: {
       name: '',
+      image: '',
     },
   });
 
   const onSubmit = (values: z.infer<typeof createWorkspaceSchema>) => {
-    mutate({ json: values });
+    const finalValues = {
+      ...values,
+      image: values.image instanceof File ? values.image : '',
+    };
+
+    mutate({ form: finalValues }, {
+      onSuccess: () => {
+        form.reset();
+        if (inputRef.current) {
+          inputRef.current.value = '';
+        }
+      },
+    });
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (file) {
+      form.setValue('image', file);
+    }
   };
 
   return (
@@ -63,6 +88,64 @@ const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
                     </FormControl>
                     <FormMessage/>
                   </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name={'image'}
+                render={({ field }) => (
+                  <div className={'flex flex-col gap-y-2'}>
+                    <div className={'flex items-center gap-x-5'}>
+                      {field.value ? (
+                        <div
+                          className={'size-[72px] relative rounded-md overflow-hidden'}
+                        >
+                          <Image
+                            src={
+                              field.value instanceof File
+                                ? URL.createObjectURL(field.value)
+                                : field.value
+                            }
+                            alt={'logo'}
+                            fill={true}
+                            className={'object-cover'}
+                          />
+                        </div>
+                      ) : (
+                        <Avatar className={'size-[72px]'}>
+                          <AvatarFallback>
+                            <ImageIcon
+                              className={'size-[36px] text-neutral-400'}
+                            />
+                          </AvatarFallback>
+                        </Avatar>
+                      )}
+                      <div className={'flex flex-col'}>
+                        <p className={'text-sm'}>工作区图标</p>
+                        <p className={'text-sm text-muted-foreground'}>
+                          JPG、PNG、SVG 或 JPEG，最大 1MB
+                        </p>
+                        <input
+                          accept={'.jpg, .png, .svg, .jpeg'}
+                          type={'file'}
+                          ref={inputRef}
+                          disabled={isPending}
+                          onChange={handleImageChange}
+                          className={'hidden'}
+                        />
+                        <Button
+                          type={'button'}
+                          size={'xs'}
+                          variant={'teritary'}
+                          disabled={isPending}
+                          onClick={() => inputRef.current?.click()}
+                          className={'w-fit mt-2'}
+                        >
+                          上传图标
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
                 )}
               />
 
