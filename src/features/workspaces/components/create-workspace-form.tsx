@@ -7,6 +7,10 @@ import { z } from 'zod';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DottedSeparator } from '@/components/dotted-separator';
 import {
+  useCreateWorkspace,
+} from '@/features/workspaces/api/use-create-workspace';
+import { useRouter } from 'next/navigation';
+import {
   Form,
   FormControl,
   FormField,
@@ -16,9 +20,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import {
-  useCreateWorkspace,
-} from '@/features/workspaces/api/use-create-workspace';
+
 import React, { useRef } from 'react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import Image from 'next/image';
@@ -29,6 +31,7 @@ interface CreateWorkspaceFormProps {
 }
 
 const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
+  const router = useRouter();
   const { mutate, isPending } = useCreateWorkspace();
   const inputRef = useRef<HTMLInputElement>(null);
   const form = useForm<z.infer<typeof createWorkspaceSchema>>({
@@ -46,11 +49,9 @@ const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
     };
 
     mutate({ form: finalValues }, {
-      onSuccess: () => {
+      onSuccess: ({ data }) => {
         form.reset();
-        if (inputRef.current) {
-          inputRef.current.value = '';
-        }
+        router.push(`/workspaces/${data.$id}`);
       },
     });
   };
@@ -71,7 +72,7 @@ const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
         </CardTitle>
       </CardHeader>
       <div className={'px-7'}>
-        <DottedSeparator/>
+        <DottedSeparator />
       </div>
       <CardContent className={'p-7'}>
         <Form {...form}>
@@ -84,9 +85,9 @@ const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
                   <FormItem>
                     <FormLabel>工作区名称</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder={'请输入工作区名称'}/>
+                      <Input {...field} placeholder={'请输入工作区名称'} />
                     </FormControl>
-                    <FormMessage/>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -150,7 +151,7 @@ const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
               />
 
             </div>
-            <DottedSeparator className={'py-7'}/>
+            <DottedSeparator className={'py-7'} />
             <div className={'flex justify-between items-center'}>
               <Button
                 type={'button'}

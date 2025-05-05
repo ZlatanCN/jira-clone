@@ -84,7 +84,7 @@ const app = new Hono()
         },
       );
 
-      // 创建成员
+      // 创建工作区
       await databases.createDocument(
         DATABASE_ID,
         MEMBERS_ID,
