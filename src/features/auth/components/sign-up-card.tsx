@@ -133,13 +133,21 @@ const SignUpCard = () => {
         <DottedSeparator/>
       </div>
       <CardContent className="p-7 flex flex-col gap-y-4">
-        <Button variant="secondary" className="w-full" size="lg"
-                disabled={isPending}>
+        <Button
+          variant="secondary"
+          className="w-full"
+          size="lg"
+          disabled={isPending}
+        >
           <FaWeixin className="mr-2 size-5"/>
           微信
         </Button>
-        <Button variant="secondary" className="w-full" size="lg"
-                disabled={isPending}>
+        <Button
+          variant="secondary"
+          className="w-full"
+          size="lg"
+          disabled={isPending}
+        >
           <SiTencentqq className="mr-2 size-5"/>
           QQ
         </Button>

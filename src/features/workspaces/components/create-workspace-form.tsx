@@ -25,6 +25,7 @@ import React, { useRef } from 'react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import Image from 'next/image';
 import { ImageIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface CreateWorkspaceFormProps {
   onCancel?: () => void;
@@ -72,7 +73,7 @@ const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
         </CardTitle>
       </CardHeader>
       <div className={'px-7'}>
-        <DottedSeparator />
+        <DottedSeparator/>
       </div>
       <CardContent className={'p-7'}>
         <Form {...form}>
@@ -85,9 +86,9 @@ const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
                   <FormItem>
                     <FormLabel>工作区名称</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder={'请输入工作区名称'} />
+                      <Input {...field} placeholder={'请输入工作区名称'}/>
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage/>
                   </FormItem>
                 )}
               />
@@ -149,9 +150,8 @@ const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
                   </div>
                 )}
               />
-
             </div>
-            <DottedSeparator className={'py-7'} />
+            <DottedSeparator className={'py-7'}/>
             <div className={'flex justify-between items-center'}>
               <Button
                 type={'button'}
@@ -159,6 +159,7 @@ const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
                 variant={'secondary'}
                 onClick={onCancel}
                 disabled={isPending}
+                className={cn(!onCancel && 'invisible')}
               >
                 取消
               </Button>
