@@ -193,6 +193,34 @@ const app = new Hono().get('/', sessionMiddleware, async (c) => {
 
     return c.json({ data: { $id: workspaceId } });
   },
+).post(
+  '/:workspaceId/reset-invite-code',
+  sessionMiddleware,
+  async (c) => {
+    const [databases, user] = [c.get('databases'), c.get('user')];
+    const { workspaceId } = c.req.param();
+
+    const member = await getMember({
+      databases,
+      workspaceId,
+      userId: user.$id,
+    });
+
+    if (!member || member.role !== MemberRole.ADMIN) {
+      return c.json({ error: '未授权' }, 401);
+    }
+
+    const workspace = await databases.updateDocument(
+      DATABASE_ID,
+      WORKSPACES_ID,
+      workspaceId,
+      {
+        inviteCode: generateInviteCode(8),
+      },
+    );
+
+    return c.json({ data: workspace });
+  },
 );
 
 export default app;

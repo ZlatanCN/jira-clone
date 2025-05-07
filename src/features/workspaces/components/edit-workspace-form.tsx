@@ -20,7 +20,7 @@ import { Button } from '@/components/ui/button';
 import React, { useRef } from 'react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import Image from 'next/image';
-import { ArrowLeftIcon, ImageIcon } from 'lucide-react';
+import { ArrowLeftIcon, CopyIcon, ImageIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Workspace } from '@/features/workspaces/types';
 import {
@@ -30,6 +30,10 @@ import { useConfirm } from '@/hooks/use-confirm';
 import {
   useDeleteWorkspace,
 } from '@/features/workspaces/api/use-delete-workspace';
+import { toast } from 'sonner';
+import {
+  useResetInviteCode,
+} from '@/features/workspaces/api/use-reset-invite-code';
 
 interface EditWorkspaceFormProps {
   onCancel?: () => void;
@@ -46,6 +50,10 @@ const EditWorkspaceForm = ({
     mutate: deleteWorkspace,
     isPending: isDeletingWorkspace,
   } = useDeleteWorkspace();
+  const {
+    mutate: resetInviteCode,
+    isPending: isResettingInviteCode,
+  } = useResetInviteCode();
   const inputRef = useRef<HTMLInputElement>(null);
   const form = useForm<z.infer<typeof updateWorkspaceSchema>>({
     resolver: zodResolver(updateWorkspaceSchema),
@@ -59,6 +67,13 @@ const EditWorkspaceForm = ({
     '此操作无法撤销',
     'destructive',
   );
+  const [ResetDialog, confirmReset] = useConfirm(
+    '重置邀请链接',
+    '此操作会让现有的邀请链接失效',
+    'destructive',
+  );
+
+  const fullInviteLink = `${window.location.origin}/workspaces/${initialValues.$id}/join/${initialValues.inviteCode}`;
 
   const onSubmit = (values: z.infer<typeof updateWorkspaceSchema>) => {
     const finalValues = {
@@ -98,9 +113,32 @@ const EditWorkspaceForm = ({
     });
   };
 
+  const handleCopyInviteLink = async () => {
+    await navigator.clipboard.writeText(fullInviteLink).then(() => {
+      toast.success('邀请链接复制成功');
+    });
+  };
+
+  const handleResetInviteCode = async () => {
+    const ok = await confirmReset();
+
+    if (!ok) {
+      return;
+    }
+
+    resetInviteCode({
+      param: { workspaceId: initialValues.$id },
+    }, {
+      onSuccess: () => {
+        router.refresh();
+      },
+    });
+  };
+
   return (
     <div className={'flex flex-col gap-y-4'}>
       <DeleteDialog/>
+      <ResetDialog/>
       <Card className={'w-full h-full border-none shadow-none'}>
         <CardHeader
           className={'flex flex-row items-center gap-x-4 p-7 space-y-0'}
@@ -246,10 +284,44 @@ const EditWorkspaceForm = ({
       <Card className={'w-full h-full border-none shadow-none'}>
         <CardContent className={'p-7'}>
           <div className={'flex flex-col'}>
+            <h3 className={'font-bold'}>邀请成员</h3>
+            <p className={'text-sm text-muted-foreground'}>
+              使用邀请链接添加成员至你的工作区
+            </p>
+            <div className={'mt-4'}>
+              <div className={'flex items-center gap-x-2'}>
+                <Input disabled={true} value={fullInviteLink}/>
+                <Button
+                  variant={'secondary'}
+                  className={'size-12'}
+                  onClick={handleCopyInviteLink}
+                >
+                  <CopyIcon className={'size-5'}/>
+                </Button>
+              </div>
+            </div>
+            <DottedSeparator className={'py-7'}/>
+            <Button
+              size={'sm'}
+              variant={'destructive'}
+              type={'button'}
+              disabled={isPending || isResettingInviteCode}
+              onClick={handleResetInviteCode}
+              className={'mt-6 w-fit ml-auto'}
+            >
+              重置邀请链接
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+      <Card className={'w-full h-full border-none shadow-none'}>
+        <CardContent className={'p-7'}>
+          <div className={'flex flex-col'}>
             <h3 className={'font-bold'}>危险区域</h3>
             <p className={'text-sm text-muted-foreground'}>
               删除一个工作区是不可逆操作，并且会清除所有相关数据
             </p>
+            <DottedSeparator className={'py-7'}/>
             <Button
               size={'sm'}
               variant={'destructive'}
