@@ -1,5 +1,32 @@
 import 'server-only';
-import { Account, Client } from 'node-appwrite';
+import { Account, Client, Databases } from 'node-appwrite';
+import { cookies } from 'next/headers';
+import { AUTH_COOKIE } from '@/features/auth/constants';
+
+async function createSessionClient () {
+  const client = new Client().setEndpoint(
+    process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!,
+  ).setProject(
+    process.env.NEXT_PUBLIC_APPWRITE_PROJECT!,
+  );
+
+  const session = cookies().get(AUTH_COOKIE);
+
+  if (!session || !session.value) {
+    throw new Error('未授权');
+  }
+
+  client.setSession(session.value);
+
+  return {
+    get account () {
+      return new Account(client);
+    },
+    get databases () {
+      return new Databases(client);
+    },
+  };
+}
 
 /**
  * 创建一个具有管理员权限的 Appwrite 客户端实例
@@ -7,7 +34,7 @@ import { Account, Client } from 'node-appwrite';
  * 此函数用于初始化一个 Appwrite 客户端，并通过环境变量配置必要的连接信息，
  * 以便进行管理用户和数据等后台操作。
  */
-export async function createAdminClient () {
+async function createAdminClient () {
   // 创建一个新的客户端实例，并设置 Appwrite 的服务地址、项目 ID 和 API 密钥
   const client = new Client().setEndpoint(
     process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!) // 设置 Appwrite 服务的端点地址
@@ -28,3 +55,4 @@ export async function createAdminClient () {
   };
 }
 
+export { createAdminClient, createSessionClient };
