@@ -135,16 +135,34 @@ const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
                           onChange={handleImageChange}
                           className={'hidden'}
                         />
-                        <Button
-                          type={'button'}
-                          size={'xs'}
-                          variant={'teritary'}
-                          disabled={isPending}
-                          onClick={() => inputRef.current?.click()}
-                          className={'w-fit mt-2'}
-                        >
-                          上传图标
-                        </Button>
+                        {field.value ? (
+                          <Button
+                            type={'button'}
+                            size={'xs'}
+                            variant={'destructive'}
+                            disabled={isPending}
+                            onClick={() => {
+                              field.onChange(null);
+                              if (inputRef.current) {
+                                inputRef.current.value = '';
+                              }
+                            }}
+                            className={'w-fit mt-2'}
+                          >
+                            移除图标
+                          </Button>
+                        ) : (
+                          <Button
+                            type={'button'}
+                            size={'xs'}
+                            variant={'teritary'}
+                            disabled={isPending}
+                            onClick={() => inputRef.current?.click()}
+                            className={'w-fit mt-2'}
+                          >
+                            上传图标
+                          </Button>
+                        )}
                       </div>
                     </div>
                   </div>

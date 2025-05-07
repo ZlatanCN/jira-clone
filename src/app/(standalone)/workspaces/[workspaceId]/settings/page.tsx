@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import {
   EditWorkspaceForm,
 } from '@/features/workspaces/components/edit-workspace-form';
+import { getWorkspace } from '@/features/workspaces/actions';
 
 interface WorkspaceIdSettingsPageProps {
   params: {
@@ -17,9 +18,15 @@ const WorkspaceIdSettingsPage = async ({ params }: WorkspaceIdSettingsPageProps)
     redirect('/sign-in');
   }
 
+  const initialValues = await getWorkspace({ workspaceId: params.workspaceId });
+
+  if (!initialValues) {
+    redirect(`/workspaces/${params.workspaceId}`);
+  }
+
   return (
-    <div>
-      <EditWorkspaceForm/>
+    <div className={'w-full lg:max-w-xl'}>
+      <EditWorkspaceForm initialValues={initialValues}/>
     </div>
   );
 };

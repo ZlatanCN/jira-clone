@@ -6,9 +6,6 @@ import { updateWorkspaceSchema } from '@/features/workspaces/schemas';
 import { z } from 'zod';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DottedSeparator } from '@/components/dotted-separator';
-import {
-  useCreateWorkspace,
-} from '@/features/workspaces/api/use-create-workspace';
 import { useRouter } from 'next/navigation';
 import {
   Form,
@@ -20,13 +17,15 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-
 import React, { useRef } from 'react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import Image from 'next/image';
-import { ImageIcon } from 'lucide-react';
+import { ArrowLeftIcon, ImageIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Workspace } from '@/features/workspaces/types';
+import {
+  useUpdateWorkspace,
+} from '@/features/workspaces/api/use-update-workspace';
 
 interface EditWorkspaceFormProps {
   onCancel?: () => void;
@@ -38,7 +37,7 @@ const EditWorkspaceForm = ({
   initialValues,
 }: EditWorkspaceFormProps) => {
   const router = useRouter();
-  const { mutate, isPending } = useCreateWorkspace();
+  const { mutate, isPending } = useUpdateWorkspace();
   const inputRef = useRef<HTMLInputElement>(null);
   const form = useForm<z.infer<typeof updateWorkspaceSchema>>({
     resolver: zodResolver(updateWorkspaceSchema),
@@ -53,7 +52,7 @@ const EditWorkspaceForm = ({
       ...values,
       image: values.image instanceof File ? values.image : '',
     };
-    
+
     mutate({ form: finalValues, param: { workspaceId: initialValues.$id } }, {
       onSuccess: ({ data }) => {
         form.reset();
@@ -72,7 +71,21 @@ const EditWorkspaceForm = ({
 
   return (
     <Card className={'w-full h-full border-none shadow-none'}>
-      <CardHeader className={'flex p-7'}>
+      <CardHeader
+        className={'flex flex-row items-center gap-x-4 p-7 space-y-0'}
+      >
+        <Button
+          size={'sm'}
+          variant={'secondary'}
+          onClick={
+            onCancel
+              ? onCancel
+              : () => router.push(`/workspaces/${initialValues.$id}`)
+          }
+        >
+          <ArrowLeftIcon className={'size-4 mr-2'}/>
+          返回
+        </Button>
         <CardTitle className={'text-xl font-bold'}>
           {initialValues.name}
         </CardTitle>
@@ -140,16 +153,34 @@ const EditWorkspaceForm = ({
                           onChange={handleImageChange}
                           className={'hidden'}
                         />
-                        <Button
-                          type={'button'}
-                          size={'xs'}
-                          variant={'teritary'}
-                          disabled={isPending}
-                          onClick={() => inputRef.current?.click()}
-                          className={'w-fit mt-2'}
-                        >
-                          上传图标
-                        </Button>
+                        {field.value ? (
+                          <Button
+                            type={'button'}
+                            size={'xs'}
+                            variant={'destructive'}
+                            disabled={isPending}
+                            onClick={() => {
+                              field.onChange(null);
+                              if (inputRef.current) {
+                                inputRef.current.value = '';
+                              }
+                            }}
+                            className={'w-fit mt-2'}
+                          >
+                            移除图标
+                          </Button>
+                        ) : (
+                          <Button
+                            type={'button'}
+                            size={'xs'}
+                            variant={'teritary'}
+                            disabled={isPending}
+                            onClick={() => inputRef.current?.click()}
+                            className={'w-fit mt-2'}
+                          >
+                            上传图标
+                          </Button>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -174,7 +205,7 @@ const EditWorkspaceForm = ({
                 variant={'primary'}
                 disabled={isPending}
               >
-                创建工作区
+                保存修改
               </Button>
             </div>
           </form>
