@@ -12,8 +12,9 @@ const routes = app.route('/auth', auth).route('/workspaces', workspaces);
 const GET = handle(app);
 const POST = handle(app);
 const PATCH = handle(app);
+const DELETE = handle(app);
 
 type AppType = typeof routes
 
-export { GET, POST, PATCH, runtime };
+export { GET, POST, PATCH, DELETE, runtime };
 export type { AppType };

@@ -6,11 +6,11 @@ import {
   GoHome,
   GoHomeFill,
 } from 'react-icons/go';
-import { SettingsIcon, UsersIcon } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { useWorkspaceId } from '@/features/workspaces/hooks/use-workspace-id';
 import { usePathname } from 'next/navigation';
+import { SettingsIcon, UsersIcon } from 'lucide-react';
 
 const Navigation = () => {
   const workspaceId = useWorkspaceId();
@@ -55,7 +55,9 @@ const Navigation = () => {
               'flex items-center gap-2.5 p-2.5 rounded-md font-medium hover:text-primary transition text-neutral-500',
               isActive && 'bg-white shadow-sm hover:opacity-100 text-primary')
             }>
-              {isActive ? <route.icon/> : <route.activeIcon/>}
+              {isActive
+                ? <route.activeIcon className={'size-5 text-neutral-500'}/>
+                : <route.icon className={'size-5 text-neutral-500'}/>}
               {route.label}
             </div>
           </Link>
