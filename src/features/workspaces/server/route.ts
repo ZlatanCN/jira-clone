@@ -15,6 +15,8 @@ import { ID, Query } from 'node-appwrite';
 import { MemberRole } from '@/features/members/types';
 import { generateInviteCode } from '@/lib/utils';
 import { getMember } from '@/features/members/utils';
+import { z } from 'zod';
+import { Workspace } from '@/features/workspaces/types';
 
 const app = new Hono().get('/', sessionMiddleware, async (c) => {
   const user = c.get('user');
@@ -216,6 +218,48 @@ const app = new Hono().get('/', sessionMiddleware, async (c) => {
       workspaceId,
       {
         inviteCode: generateInviteCode(8),
+      },
+    );
+
+    return c.json({ data: workspace });
+  },
+).post(
+  '/:workspaceId/join',
+  sessionMiddleware,
+  zValidator('json', z.object({ code: z.string() })),
+  async (c) => {
+    const { workspaceId } = c.req.param();
+    const { code } = c.req.valid('json');
+    const [databases, user] = [c.get('databases'), c.get('user')];
+
+    const member = await getMember({
+      databases,
+      workspaceId,
+      userId: user.$id,
+    });
+
+    if (member) {
+      return c.json({ error: '已经是一名成员' }, 400);
+    }
+
+    const workspace = await databases.getDocument<Workspace>(
+      DATABASE_ID,
+      WORKSPACES_ID,
+      workspaceId,
+    );
+
+    if (workspace.inviteCode !== code) {
+      return c.json({ error: '邀请码错误' }, 400);
+    }
+
+    await databases.createDocument(
+      DATABASE_ID,
+      MEMBERS_ID,
+      ID.unique(),
+      {
+        workspaceId,
+        userId: user.$id,
+        role: MemberRole.MEMBER,
       },
     );
 

@@ -10,7 +10,7 @@ const WorkspaceIdPage = async () => {
   }
 
   return (
-    <div>工作区页面</div>
+    <div>工作区ID页面</div>
   );
 };
 
