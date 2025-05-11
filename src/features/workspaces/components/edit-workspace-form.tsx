@@ -82,9 +82,8 @@ const EditWorkspaceForm = ({
     };
 
     mutate({ form: finalValues, param: { workspaceId: initialValues.$id } }, {
-      onSuccess: ({ data }) => {
+      onSuccess: () => {
         form.reset();
-        router.push(`/workspaces/${data.$id}`);
       },
     });
   };
@@ -128,17 +127,13 @@ const EditWorkspaceForm = ({
 
     resetInviteCode({
       param: { workspaceId: initialValues.$id },
-    }, {
-      onSuccess: () => {
-        router.refresh();
-      },
     });
   };
 
   return (
     <div className={'flex flex-col gap-y-4'}>
-      <DeleteDialog/>
-      <ResetDialog/>
+      <DeleteDialog />
+      <ResetDialog />
       <Card className={'w-full h-full border-none shadow-none'}>
         <CardHeader
           className={'flex flex-row items-center gap-x-4 p-7 space-y-0'}
@@ -152,7 +147,7 @@ const EditWorkspaceForm = ({
                 : () => router.push(`/workspaces/${initialValues.$id}`)
             }
           >
-            <ArrowLeftIcon className={'size-4 mr-2'}/>
+            <ArrowLeftIcon className={'size-4 mr-2'} />
             返回
           </Button>
           <CardTitle className={'text-xl font-bold'}>
@@ -160,7 +155,7 @@ const EditWorkspaceForm = ({
           </CardTitle>
         </CardHeader>
         <div className={'px-7'}>
-          <DottedSeparator/>
+          <DottedSeparator />
         </div>
         <CardContent className={'p-7'}>
           <Form {...form}>
@@ -173,9 +168,9 @@ const EditWorkspaceForm = ({
                     <FormItem>
                       <FormLabel>工作区名称</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder={'请输入工作区名称'}/>
+                        <Input {...field} placeholder={'请输入工作区名称'} />
                       </FormControl>
-                      <FormMessage/>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -256,7 +251,7 @@ const EditWorkspaceForm = ({
                   )}
                 />
               </div>
-              <DottedSeparator className={'py-7'}/>
+              <DottedSeparator className={'py-7'} />
               <div className={'flex justify-between items-center'}>
                 <Button
                   type={'button'}
@@ -290,17 +285,17 @@ const EditWorkspaceForm = ({
             </p>
             <div className={'mt-4'}>
               <div className={'flex items-center gap-x-2'}>
-                <Input disabled={true} value={fullInviteLink}/>
+                <Input disabled={true} value={fullInviteLink} />
                 <Button
                   variant={'secondary'}
                   className={'size-12'}
                   onClick={handleCopyInviteLink}
                 >
-                  <CopyIcon className={'size-5'}/>
+                  <CopyIcon className={'size-5'} />
                 </Button>
               </div>
             </div>
-            <DottedSeparator className={'py-7'}/>
+            <DottedSeparator className={'py-7'} />
             <Button
               size={'sm'}
               variant={'destructive'}
@@ -321,7 +316,7 @@ const EditWorkspaceForm = ({
             <p className={'text-sm text-muted-foreground'}>
               删除一个工作区是不可逆操作，并且会清除所有相关数据
             </p>
-            <DottedSeparator className={'py-7'}/>
+            <DottedSeparator className={'py-7'} />
             <Button
               size={'sm'}
               variant={'destructive'}
