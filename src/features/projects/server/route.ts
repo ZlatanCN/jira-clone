@@ -5,7 +5,10 @@ import { z } from 'zod';
 import { getMember } from '@/features/members/utils';
 import { DATABASE_ID, IMAGES_BUCKET_ID, PROJECTS_ID } from '@/config';
 import { ID, Query } from 'node-appwrite';
-import { createProjectSchema, updateProjectSchema } from '@/features/projects/schemas';
+import {
+  createProjectSchema,
+  updateProjectSchema,
+} from '@/features/projects/schemas';
 import { Project } from '../types';
 
 const app = new Hono().post(
@@ -165,6 +168,39 @@ const app = new Hono().post(
     );
 
     return c.json({ data: project });
+  },
+).delete(
+  '/:projectId',
+  sessionMiddleware,
+  async (c) => {
+    const [databases, user] = [c.get('databases'), c.get('user')];
+    const { projectId } = c.req.param();
+
+    const existingProject = await databases.getDocument<Project>(
+      DATABASE_ID,
+      PROJECTS_ID,
+      projectId,
+    );
+
+    const member = await getMember({
+      databases,
+      workspaceId: existingProject.workspaceId,
+      userId: user.$id,
+    });
+
+    if (!member) {
+      return c.json({ error: '未授权' }, 401);
+    }
+
+    //TODO: 删除所有任务
+
+    await databases.deleteDocument(
+      DATABASE_ID,
+      PROJECTS_ID,
+      projectId,
+    );
+
+    return c.json({ data: { $id: existingProject.$id } });
   },
 );
 

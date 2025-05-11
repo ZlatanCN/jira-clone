@@ -2,6 +2,7 @@ import { createSessionClient } from '@/lib/appwrite';
 import { getMember } from '@/features/members/utils';
 import { DATABASE_ID, PROJECTS_ID } from '@/config';
 import { Project } from './types';
+
 interface GetProjectProps {
   projectId: string;
 }

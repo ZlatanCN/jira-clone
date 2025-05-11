@@ -1,15 +1,10 @@
 'use client';
 
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { createProjectSchema } from '@/features/projects/schemas';
 import { z } from 'zod';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DottedSeparator } from '@/components/dotted-separator';
-import {
-  useCreateProject,
-} from '@/features/projects/api/use-create-project';
-// import { useRouter } from 'next/navigation';
+import { useCreateProject } from '@/features/projects/api/use-create-project';
 import {
   Form,
   FormControl,
@@ -20,13 +15,15 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-
 import React, { useRef } from 'react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import Image from 'next/image';
 import { ImageIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useWorkspaceId } from '@/features/workspaces/hooks/use-workspace-id';
+import { useRouter } from 'next/navigation';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
 
 interface CreateProjectFormProps {
   onCancel?: () => void;
@@ -34,7 +31,7 @@ interface CreateProjectFormProps {
 
 const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
   const workspaceId = useWorkspaceId();
-  // const router = useRouter();
+  const router = useRouter();
   const { mutate, isPending } = useCreateProject();
   const inputRef = useRef<HTMLInputElement>(null);
   const form = useForm<z.infer<typeof createProjectSchema>>({
@@ -47,13 +44,14 @@ const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
   const onSubmit = (values: z.infer<typeof createProjectSchema>) => {
     const finalValues = {
       ...values,
+      workspaceId,
       image: values.image instanceof File ? values.image : '',
-      workspaceId
     };
 
     mutate({ form: finalValues }, {
-      onSuccess: () => {
-        form.reset()
+      onSuccess: ({ data }) => {
+        form.reset();
+        router.push(`/workspaces/${workspaceId}/projects/${data.$id}`);
       },
     });
   };
@@ -74,7 +72,7 @@ const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
         </CardTitle>
       </CardHeader>
       <div className={'px-7'}>
-        <DottedSeparator />
+        <DottedSeparator/>
       </div>
       <CardContent className={'p-7'}>
         <Form {...form}>
@@ -87,9 +85,9 @@ const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
                   <FormItem>
                     <FormLabel>项目名称</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder={'请输入项目名称'} />
+                      <Input {...field} placeholder={'请输入项目名称'}/>
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage/>
                   </FormItem>
                 )}
               />
@@ -170,7 +168,7 @@ const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
                 )}
               />
             </div>
-            <DottedSeparator className={'py-7'} />
+            <DottedSeparator className={'py-7'}/>
             <div className={'flex justify-between items-center'}>
               <Button
                 type={'button'}

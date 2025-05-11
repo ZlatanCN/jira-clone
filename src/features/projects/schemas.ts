@@ -6,7 +6,7 @@ export const createProjectSchema = z.object({
     z.instanceof(File),
     z.string().transform((value) => value === '' ? undefined : value),
   ]).optional(),
-  workspaceId: z.string(),
+  workspaceId: z.string().optional(),
 });
 
 export const updateProjectSchema = z.object({
