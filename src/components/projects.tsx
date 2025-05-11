@@ -6,19 +6,21 @@ import { useWorkspaceId } from '@/features/workspaces/hooks/use-workspace-id';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { useCreateProjectModal } from "@/features/projects/hooks/use-create-project-modal";
+import { ProjectAvatar } from '@/features/projects/components/project-avatar';
 
 const Projects = () => {
   const pathname = usePathname();
   const projectId = null; // TODO：获取当前项目ID
   const workspaceId = useWorkspaceId();
   const { data } = useGetProjects({ workspaceId });
-
+  const { open } = useCreateProjectModal();
   return (
     <div className="flex flex-col gap-y-2">
       <div className="flex items-center justify-between">
         <p className="text-xl text-neutral-500">项目</p>
         <RiAddCircleFill
-          onClick={() => {}}
+          onClick={open}
           className="size-5 text-neutral-500 cursor-pointer hover:opacity-75 transition"
         />
       </div>
@@ -34,6 +36,10 @@ const Projects = () => {
                 isActive && 'bg-white shadow-sm hover:opacity-100 text-primary',
               )}
             >
+              <ProjectAvatar
+                image={project.imageUrl}
+                name={project.name}
+              />
               <span className={'truncate'}>{project.name}</span>
             </div>
           </Link>
