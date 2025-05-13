@@ -21,6 +21,17 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useCreateTask } from '@/features/tasks/api/use-create-task';
 import { createTaskSchema } from '../schemas';
+import { DatePicker } from '@/components/date-picker';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { MemberAvatar } from '@/features/members/components/member-avatar';
+import { TaskStatus } from '../types';
+import { ProjectAvatar } from '@/features/projects/components/project-avatar';
 
 interface CreateTaskFormProps {
   onCancel?: () => void;
@@ -57,6 +68,7 @@ const CreateTaskForm = ({
       {
         onSuccess: () => {
           form.reset();
+          onCancel?.();
         },
       },
     );
@@ -101,8 +113,103 @@ const CreateTaskForm = ({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>截止日期</FormLabel>
-                    <FormControl>{}</FormControl>
+                    <FormControl>
+                      <DatePicker {...field} />
+                    </FormControl>
                     <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                name="assigneeId"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>代理人</FormLabel>
+                    <Select
+                      defaultValue={field.value}
+                      onValueChange={field.onChange}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="选择代理人" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <FormMessage />
+                      <SelectContent>
+                        {memberOptions.map((member) => (
+                          <SelectItem key={member.id} value={member.id}>
+                            <div className='flex items-center gap-x-2'>
+                              <MemberAvatar className="size-6" name={member.name} />
+                              {member.name}
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                name="status"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>状态</FormLabel>
+                    <Select
+                      defaultValue={field.value}
+                      onValueChange={field.onChange}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="选择状态" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <FormMessage />
+                      <SelectContent>
+                        <SelectItem value={TaskStatus.BACKLOG}>
+                          Backlog
+                        </SelectItem>
+                        <SelectItem value={TaskStatus.IN_PROGRESS}>
+                          In Progress
+                        </SelectItem>
+                        <SelectItem value={TaskStatus.IN_REVIEW}>
+                          InReview
+                        </SelectItem>
+                        <SelectItem value={TaskStatus.TODO}>Todo</SelectItem>
+                        <SelectItem value={TaskStatus.DONE}>Done</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                name="projectId"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>项目</FormLabel>
+                    <Select
+                      defaultValue={field.value}
+                      onValueChange={field.onChange}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="选择项目" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <FormMessage />
+                      <SelectContent>
+                        {projectOptions.map((project) => (
+                          <SelectItem key={project.id} value={project.id}>
+                            <div className='flex items-center gap-x-2'>
+                              <ProjectAvatar className="size-6" name={project.name} image={project.imageUrl} />
+                              {project.name}
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </FormItem>
                 )}
               />
