@@ -28,7 +28,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from '@/components/ui/select';
 import { MemberAvatar } from '@/features/members/components/member-avatar';
 import { TaskStatus } from '../types';
 import { ProjectAvatar } from '@/features/projects/components/project-avatar';
@@ -74,18 +74,10 @@ const CreateTaskForm = ({
     );
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-
-    if (file) {
-      form.setValue('image', file);
-    }
-  };
-
   return (
     <Card className={'h-full w-full border-none shadow-none'}>
       <CardHeader className={'flex p-7'}>
-        <CardTitle className={'text-xl font-bold'}>创建一个新的项目</CardTitle>
+        <CardTitle className={'text-xl font-bold'}>创建一个新的任务</CardTitle>
       </CardHeader>
       <div className={'px-7'}>
         <DottedSeparator />
@@ -139,8 +131,11 @@ const CreateTaskForm = ({
                       <SelectContent>
                         {memberOptions.map((member) => (
                           <SelectItem key={member.id} value={member.id}>
-                            <div className='flex items-center gap-x-2'>
-                              <MemberAvatar className="size-6" name={member.name} />
+                            <div className="flex items-center gap-x-2">
+                              <MemberAvatar
+                                className="size-6"
+                                name={member.name}
+                              />
                               {member.name}
                             </div>
                           </SelectItem>
@@ -168,16 +163,16 @@ const CreateTaskForm = ({
                       <FormMessage />
                       <SelectContent>
                         <SelectItem value={TaskStatus.BACKLOG}>
-                          Backlog
+                          待办列表
                         </SelectItem>
                         <SelectItem value={TaskStatus.IN_PROGRESS}>
-                          In Progress
+                          进行中
                         </SelectItem>
                         <SelectItem value={TaskStatus.IN_REVIEW}>
-                          InReview
+                          审查中
                         </SelectItem>
-                        <SelectItem value={TaskStatus.TODO}>Todo</SelectItem>
-                        <SelectItem value={TaskStatus.DONE}>Done</SelectItem>
+                        <SelectItem value={TaskStatus.TODO}>待处理</SelectItem>
+                        <SelectItem value={TaskStatus.DONE}>已完成</SelectItem>
                       </SelectContent>
                     </Select>
                   </FormItem>
@@ -202,8 +197,12 @@ const CreateTaskForm = ({
                       <SelectContent>
                         {projectOptions.map((project) => (
                           <SelectItem key={project.id} value={project.id}>
-                            <div className='flex items-center gap-x-2'>
-                              <ProjectAvatar className="size-6" name={project.name} image={project.imageUrl} />
+                            <div className="flex items-center gap-x-2">
+                              <ProjectAvatar
+                                className="size-6"
+                                name={project.name}
+                                image={project.imageUrl}
+                              />
                               {project.name}
                             </div>
                           </SelectItem>

@@ -2,15 +2,31 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { PlusIcon } from 'lucide-react';
+import { Loader, PlusIcon } from 'lucide-react';
 import { DottedSeparator } from '@/components/dotted-separator';
 import { useCreateTaskModal } from '@/features/tasks/hooks/use-create-task-modal';
+import { useGetTasks } from '@/features/tasks/api/use-get-tasks';
+import { useWorkspaceId } from '@/features/workspaces/hooks/use-workspace-id';
+import { useQueryState } from 'nuqs';
+import { DataFilters } from '@/features/tasks/components/data-filters';
 
 const TaskViewSwitcher = () => {
+  const [view, setView] = useQueryState('task-view', {
+    defaultValue: 'table',
+  });
+  const workspaceId = useWorkspaceId();
+
+  const { data: tasks, isLoading: isLoadingTasks } = useGetTasks({
+    workspaceId,
+  });
   const { open } = useCreateTaskModal();
 
   return (
-    <Tabs className={'w-full flex-1 rounded-lg border'}>
+    <Tabs
+      defaultValue={view}
+      onValueChange={setView}
+      className={'w-full flex-1 rounded-lg border'}
+    >
       <div className={'flex h-full flex-col overflow-auto p-4'}>
         <div
           className={
@@ -34,19 +50,25 @@ const TaskViewSwitcher = () => {
           </Button>
         </div>
         <DottedSeparator className={'my-4'} />
-        数据过滤
+        <DataFilters />
         <DottedSeparator className={'my-4'} />
-        <>
-          <TabsContent value={'table'} className={'mt-0'}>
-            表格数据
-          </TabsContent>
-          <TabsContent value={'kanban'} className={'mt-0'}>
-            看板数据
-          </TabsContent>
-          <TabsContent value={'calendar'} className={'mt-0'}>
-            日历数据
-          </TabsContent>
-        </>
+        {isLoadingTasks ? (
+          <div className="flex h-[200px] w-full flex-col items-center justify-center rounded-lg border">
+            <Loader className="size-5 animate-spin text-muted-foreground" />
+          </div>
+        ) : (
+          <>
+            <TabsContent value={'table'} className={'mt-0'}>
+              {JSON.stringify(tasks)}
+            </TabsContent>
+            <TabsContent value={'kanban'} className={'mt-0'}>
+              {JSON.stringify(tasks)}
+            </TabsContent>
+            <TabsContent value={'calendar'} className={'mt-0'}>
+              {JSON.stringify(tasks)}
+            </TabsContent>
+          </>
+        )}
       </div>
     </Tabs>
   );
