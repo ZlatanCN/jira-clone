@@ -9,8 +9,10 @@ import { useGetTasks } from '@/features/tasks/api/use-get-tasks';
 import { useWorkspaceId } from '@/features/workspaces/hooks/use-workspace-id';
 import { useQueryState } from 'nuqs';
 import { DataFilters } from '@/features/tasks/components/data-filters';
+import { useTaskFilters } from '@/features/tasks/hooks/use-task-filters';
 
 const TaskViewSwitcher = () => {
+  const [{ status, assigneeId, projectId, dueDate }] = useTaskFilters();
   const [view, setView] = useQueryState('task-view', {
     defaultValue: 'table',
   });
@@ -18,6 +20,10 @@ const TaskViewSwitcher = () => {
 
   const { data: tasks, isLoading: isLoadingTasks } = useGetTasks({
     workspaceId,
+    projectId,
+    status,
+    assigneeId,
+    dueDate,
   });
   const { open } = useCreateTaskModal();
 

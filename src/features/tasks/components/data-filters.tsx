@@ -9,8 +9,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { ListCheckIcon } from 'lucide-react';
+import { FolderIcon, ListCheckIcon, UserIcon } from 'lucide-react';
 import { TaskStatus } from '@/features/tasks/types';
+import { useTaskFilters } from '@/features/tasks/hooks/use-task-filters';
 
 interface DataFiltersProps {
   hideProjectFilter?: boolean;
@@ -40,17 +41,21 @@ const DataFilters = ({ hideProjectFilter }: DataFiltersProps) => {
     useTaskFilters();
 
   const onStatusChange = (value: string) => {
-    if (value === 'all') {
-      setFilters({ status: null });
-    } else {
-      setFilters({ status: value as TaskStatus });
-    }
+    setFilters({ status: value == 'all' ? null : (value as TaskStatus) });
   };
-
+  const onAssigneeChange = (value: string) => {
+    setFilters({ assigneeId: value == 'all' ? null : (value as string) });
+  };
+  const onProjectChange = (value: string) => {
+    setFilters({ projectId: value == 'all' ? null : (value as string) });
+  };
   if (isLoading) return null;
   return (
     <div className="flex flex-col gap-2 lg:flex-row">
-      <Select defaultValue={undefined} onValueChange={() => {}}>
+      <Select
+        defaultValue={status ?? undefined}
+        onValueChange={(value) => onStatusChange(value)}
+      >
         <SelectTrigger className="h-8 w-full lg:w-auto">
           <div className="flex items-center pr-2">
             <ListCheckIcon className="mr-2 size-4" />
@@ -61,6 +66,50 @@ const DataFilters = ({ hideProjectFilter }: DataFiltersProps) => {
           <SelectItem value="all">所有状态</SelectItem>
           <SelectSeparator />
           <SelectItem value={TaskStatus.BACKLOG}>待办列表</SelectItem>
+          <SelectItem value={TaskStatus.IN_PROGRESS}>进行中</SelectItem>
+          <SelectItem value={TaskStatus.IN_REVIEW}>审核中</SelectItem>
+          <SelectItem value={TaskStatus.TODO}>未完成</SelectItem>
+          <SelectItem value={TaskStatus.DONE}>已完成</SelectItem>
+        </SelectContent>
+      </Select>
+      <Select
+        defaultValue={assigneeId ?? undefined}
+        onValueChange={(value) => onProjectChange(value)}
+      >
+        <SelectTrigger className="h-8 w-full lg:w-auto">
+          <div className="flex items-center pr-2">
+            <UserIcon className="mr-2 size-4" />
+            <SelectValue placeholder="All assignees" />
+          </div>
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">所有代理人</SelectItem>
+          <SelectSeparator />
+          {memberOptions?.map((member) => (
+            <SelectItem key={member.value} value={member.value}>
+              {member.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      <Select
+        defaultValue={projectId ?? undefined}
+        onValueChange={(value) => onAssigneeChange(value)}
+      >
+        <SelectTrigger className="h-8 w-full lg:w-auto">
+          <div className="flex items-center pr-2">
+            <FolderIcon className="mr-2 size-4" />
+            <SelectValue placeholder="All projects" />
+          </div>
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">所有项目</SelectItem>
+          <SelectSeparator />
+          {projectOptions?.map((project) => (
+            <SelectItem key={project.value} value={project.value}>
+              {project.label}
+            </SelectItem>
+          ))}
         </SelectContent>
       </Select>
     </div>
