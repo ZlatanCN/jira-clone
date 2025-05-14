@@ -12,6 +12,7 @@ import {
 import { FolderIcon, ListCheckIcon, UserIcon } from 'lucide-react';
 import { TaskStatus } from '@/features/tasks/types';
 import { useTaskFilters } from '@/features/tasks/hooks/use-task-filters';
+import { DatePicker } from '@/components/date-picker';
 
 interface DataFiltersProps {
   hideProjectFilter?: boolean;
@@ -40,14 +41,14 @@ const DataFilters = ({ hideProjectFilter }: DataFiltersProps) => {
   const [{ status, assigneeId, projectId, dueDate }, setFilters] =
     useTaskFilters();
 
-  const onStatusChange = (value: string) => {
-    setFilters({ status: value == 'all' ? null : (value as TaskStatus) });
+  const onStatusChange = async (value: string) => {
+    await setFilters({ status: value == 'all' ? null : (value as TaskStatus) });
   };
-  const onAssigneeChange = (value: string) => {
-    setFilters({ assigneeId: value == 'all' ? null : (value as string) });
+  const onAssigneeChange = async (value: string) => {
+    await setFilters({ assigneeId: value == 'all' ? null : (value as string) });
   };
-  const onProjectChange = (value: string) => {
-    setFilters({ projectId: value == 'all' ? null : (value as string) });
+  const onProjectChange = async (value: string) => {
+    await setFilters({ projectId: value == 'all' ? null : (value as string) });
   };
   if (isLoading) return null;
   return (
@@ -59,7 +60,7 @@ const DataFilters = ({ hideProjectFilter }: DataFiltersProps) => {
         <SelectTrigger className="h-8 w-full lg:w-auto">
           <div className="flex items-center pr-2">
             <ListCheckIcon className="mr-2 size-4" />
-            <SelectValue placeholder="All statuses" />
+            <SelectValue placeholder="所有状态" />
           </div>
         </SelectTrigger>
         <SelectContent>
@@ -79,7 +80,7 @@ const DataFilters = ({ hideProjectFilter }: DataFiltersProps) => {
         <SelectTrigger className="h-8 w-full lg:w-auto">
           <div className="flex items-center pr-2">
             <UserIcon className="mr-2 size-4" />
-            <SelectValue placeholder="All assignees" />
+            <SelectValue placeholder="所有代理人" />
           </div>
         </SelectTrigger>
         <SelectContent>
@@ -99,7 +100,7 @@ const DataFilters = ({ hideProjectFilter }: DataFiltersProps) => {
         <SelectTrigger className="h-8 w-full lg:w-auto">
           <div className="flex items-center pr-2">
             <FolderIcon className="mr-2 size-4" />
-            <SelectValue placeholder="All projects" />
+            <SelectValue placeholder="所有项目" />
           </div>
         </SelectTrigger>
         <SelectContent>
@@ -112,6 +113,14 @@ const DataFilters = ({ hideProjectFilter }: DataFiltersProps) => {
           ))}
         </SelectContent>
       </Select>
+      <DatePicker
+        placeholder="截止日期"
+        className={'h-8 w-full lg:w-auto'}
+        value={dueDate ? new Date(dueDate) : undefined}
+        onChange={async (date) => {
+          await setFilters({ dueDate: date ? date.toISOString() : null });
+        }}
+      />
     </div>
   );
 };
