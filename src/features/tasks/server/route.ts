@@ -262,7 +262,7 @@ const app = new Hono()
       await databases.getDocument<Project>(
         DATABASE_ID,
         PROJECTS_ID,
-        task.projeactId,
+        task.projectId,
       ),
       await databases.getDocument(DATABASE_ID, MEMBERS_ID, task.assigneeId),
     ];

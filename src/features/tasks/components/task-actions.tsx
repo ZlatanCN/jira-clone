@@ -10,6 +10,7 @@ import { useDeleteTask } from '@/features/tasks/api/use-delete-task';
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { useWorkspaceId } from '@/features/workspaces/hooks/use-workspace-id';
+import { useEditTaskModal } from '@/features/tasks/hooks/use-edit-task-modal';
 
 interface TaskActionsProps {
   id: string;
@@ -26,6 +27,8 @@ const TaskActions = ({ id, projectId, children }: TaskActionsProps) => {
     'destructive',
   );
   const { mutate, isPending } = useDeleteTask();
+  const { open } = useEditTaskModal();
+
   const onDelete = async () => {
     const ok = await confirm();
     if (!ok) return;
@@ -61,7 +64,7 @@ const TaskActions = ({ id, projectId, children }: TaskActionsProps) => {
             打开项目
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => {}}
+            onClick={() => open(id)}
             className={'p-[10px] font-medium'}
           >
             <PencilIcon className="mr-2 h-4 w-4 stroke-2" />
