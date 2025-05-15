@@ -7,6 +7,9 @@ import {
 import { ExternalLinkIcon, PencilIcon, TrashIcon } from 'lucide-react';
 import { useConfirm } from '@/hooks/use-confirm';
 import { useDeleteTask } from '@/features/tasks/api/use-delete-task';
+import React from 'react';
+import { useRouter } from 'next/navigation';
+import { useWorkspaceId } from '@/features/workspaces/hooks/use-workspace-id';
 
 interface TaskActionsProps {
   id: string;
@@ -15,9 +18,11 @@ interface TaskActionsProps {
 }
 
 const TaskActions = ({ id, projectId, children }: TaskActionsProps) => {
+  const router = useRouter();
+  const workspaceId = useWorkspaceId();
   const [ConfirmDialog, confirm] = useConfirm(
-    'Delete task',
-    'This action cannot be undone',
+    '删除任务',
+    '此操作不可撤销',
     'destructive',
   );
   const { mutate, isPending } = useDeleteTask();
@@ -27,6 +32,14 @@ const TaskActions = ({ id, projectId, children }: TaskActionsProps) => {
     mutate({ param: { taskId: id } });
   };
 
+  const onOpenTask = () => {
+    router.push(`/workspaces/${workspaceId}/tasks/${id}`);
+  };
+
+  const onOpenProject = () => {
+    router.push(`/workspaces/${workspaceId}/projects/${projectId}`);
+  };
+
   return (
     <div className="flex justify-end">
       <ConfirmDialog />
@@ -34,14 +47,14 @@ const TaskActions = ({ id, projectId, children }: TaskActionsProps) => {
         <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-48">
           <DropdownMenuItem
-            onClick={() => {}}
+            onClick={onOpenTask}
             className={'p-[10px] font-medium'}
           >
             <ExternalLinkIcon className="mr-2 h-4 w-4 stroke-2" />
             任务细节
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => {}}
+            onClick={onOpenProject}
             className={'p-[10px] font-medium'}
           >
             <ExternalLinkIcon className="mr-2 h-4 w-4 stroke-2" />
@@ -55,10 +68,8 @@ const TaskActions = ({ id, projectId, children }: TaskActionsProps) => {
             编辑任务
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={(onDelete) => {
-              isPending;
-            }}
-            disabled={false}
+            onClick={onDelete}
+            disabled={isPending}
             className={
               'p-[10px] font-medium text-amber-700 focus:text-amber-700'
             }

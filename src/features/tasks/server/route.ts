@@ -27,7 +27,7 @@ const app = new Hono()
       return c.json({ error: '未授权' }, 401);
     }
     await databases.deleteDocument(DATABASE_ID, TASKS_ID, taskId);
-    return c.json({ $id: task.$id });
+    return c.json({ data: { $id: task.$id } });
   })
   .get(
     '/',
@@ -152,7 +152,7 @@ const app = new Hono()
 
       const member = await getMember({
         databases,
-        workspaceId,
+        workspaceId: workspaceId as string,
         userId: user.$id,
       });
 
@@ -165,7 +165,7 @@ const app = new Hono()
         TASKS_ID,
         [
           Query.equal('projectId', projectId),
-          Query.equal('workspaceId', workspaceId),
+          Query.equal('workspaceId', workspaceId as string),
           Query.orderDesc('position'),
           Query.limit(1),
         ],
@@ -193,6 +193,95 @@ const app = new Hono()
 
       return c.json({ data: task });
     },
-  );
+  )
+  .patch(
+    '/:taskId',
+    sessionMiddleware,
+    zValidator('json', createTaskSchema.partial()),
+    async (c) => {
+      const [user, databases] = [c.get('user'), c.get('databases')];
+      const { name, description, dueDate, projectId, status, assigneeId } =
+        c.req.valid('json');
+      const { taskId } = c.req.param();
+
+      const existingTask = await databases.getDocument<Task>(
+        DATABASE_ID,
+        TASKS_ID,
+        taskId,
+      );
+
+      const member = await getMember({
+        databases,
+        workspaceId: existingTask.workspaceId,
+        userId: user.$id,
+      });
+
+      if (!member) {
+        return c.json({ error: '未授权' }, 401);
+      }
+
+      const task = await databases.updateDocument<Task>(
+        DATABASE_ID,
+        TASKS_ID,
+        taskId,
+        {
+          name,
+          projectId,
+          status,
+          assigneeId,
+          dueDate,
+          description,
+        },
+      );
+
+      return c.json({ data: task });
+    },
+  )
+  .get('/:taskId', sessionMiddleware, async (c) => {
+    const { taskId } = c.req.param();
+    const [currentUser, databases] = [c.get('user'), c.get('databases')];
+    const { users } = await createAdminClient();
+
+    const task = await databases.getDocument<Task>(
+      DATABASE_ID,
+      TASKS_ID,
+      taskId,
+    );
+
+    const currentMember = await getMember({
+      databases,
+      workspaceId: task.workspaceId,
+      userId: currentUser.$id,
+    });
+
+    if (!currentMember) {
+      return c.json({ error: '未授权' }, 401);
+    }
+
+    const [project, member] = [
+      await databases.getDocument<Project>(
+        DATABASE_ID,
+        PROJECTS_ID,
+        task.projeactId,
+      ),
+      await databases.getDocument(DATABASE_ID, MEMBERS_ID, task.assigneeId),
+    ];
+
+    const user = await users.get(member.userId);
+
+    const assignee = {
+      ...member,
+      name: user.name,
+      email: user.email,
+    };
+
+    return c.json({
+      data: {
+        ...task,
+        project,
+        assignee,
+      },
+    });
+  });
 
 export default app;
