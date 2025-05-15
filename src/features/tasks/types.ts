@@ -12,6 +12,7 @@ type Task = Models.Document & {
   projectId: string;
   assigneeId: string;
   status: TaskStatus;
+  workspaceId: string;
   name: string;
   dueDate: string;
   position: number;
