@@ -1,3 +1,36 @@
 {
-  "extends": ["next/core-web-vitals", "next/typescript"]
+  "extends": [
+    "next/core-web-vitals",
+    "next/typescript",
+    "plugin:react/recommended",
+    // 启用 react 插件推荐配置
+    "plugin:prettier/recommended"
+    // @see https://github.com/prettier/eslint-plugin-prettier
+  ],
+  "plugins": [
+    "react",
+    // React 相关规则
+    "prettier"
+    // Prettier 作为 ESLint 规则执行
+  ],
+  "settings": {
+    "react": {
+      "version": "detect"
+      // 自动检测 React 版本
+    }
+  },
+  "rules": {
+    "react/react-in-jsx-scope": "off",
+    // 移除 React 的 import
+    "react/jsx-curly-brace-presence": [
+      // 强制所有 JSX 属性值都使用大括号
+      "error",
+      {
+        "props": "always",
+        "children": "never"
+      }
+    ],
+    "prettier/prettier": "error"
+    // 确保 Prettier 错误也会被 ESLint 报告
+  }
 }

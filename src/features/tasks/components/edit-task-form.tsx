@@ -1,6 +1,6 @@
 'use client';
 
-import { undefined, z } from 'zod';
+import { z } from 'zod';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DottedSeparator } from '@/components/dotted-separator';
 import {
@@ -15,7 +15,6 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { useWorkspaceId } from '@/features/workspaces/hooks/use-workspace-id';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { createTaskSchema } from '../schemas';
@@ -52,7 +51,6 @@ const EditTaskForm = ({
   memberOptions,
   initialValues,
 }: EditTaskFormProps) => {
-  const workspaceId = useWorkspaceId();
   const { mutate, isPending } = useUpdateTask();
   const form = useForm<z.infer<typeof createTaskSchema>>({
     resolver: zodResolver(
@@ -91,7 +89,7 @@ const EditTaskForm = ({
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className={'flex flex-col gap-y-4'}>
               <FormField
-                name="name"
+                name={'name'}
                 control={form.control}
                 render={({ field }) => (
                   <FormItem>
@@ -104,7 +102,7 @@ const EditTaskForm = ({
                 )}
               />
               <FormField
-                name="dueDate"
+                name={'dueDate'}
                 control={form.control}
                 render={({ field }) => (
                   <FormItem>
@@ -117,7 +115,7 @@ const EditTaskForm = ({
                 )}
               />
               <FormField
-                name="assigneeId"
+                name={'assigneeId'}
                 control={form.control}
                 render={({ field }) => (
                   <FormItem>
@@ -128,16 +126,16 @@ const EditTaskForm = ({
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="选择代理人" />
+                          <SelectValue placeholder={'选择代理人'} />
                         </SelectTrigger>
                       </FormControl>
                       <FormMessage />
                       <SelectContent>
                         {memberOptions.map((member) => (
                           <SelectItem key={member.id} value={member.id}>
-                            <div className="flex items-center gap-x-2">
+                            <div className={'flex items-center gap-x-2'}>
                               <MemberAvatar
-                                className="size-6"
+                                className={'size-6'}
                                 name={member.name}
                               />
                               {member.name}
@@ -150,7 +148,7 @@ const EditTaskForm = ({
                 )}
               />
               <FormField
-                name="status"
+                name={'status'}
                 control={form.control}
                 render={({ field }) => (
                   <FormItem>
@@ -161,7 +159,7 @@ const EditTaskForm = ({
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="选择状态" />
+                          <SelectValue placeholder={'选择状态'} />
                         </SelectTrigger>
                       </FormControl>
                       <FormMessage />
@@ -183,7 +181,7 @@ const EditTaskForm = ({
                 )}
               />
               <FormField
-                name="projectId"
+                name={'projectId'}
                 control={form.control}
                 render={({ field }) => (
                   <FormItem>
@@ -194,16 +192,16 @@ const EditTaskForm = ({
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="选择项目" />
+                          <SelectValue placeholder={'选择项目'} />
                         </SelectTrigger>
                       </FormControl>
                       <FormMessage />
                       <SelectContent>
                         {projectOptions.map((project) => (
                           <SelectItem key={project.id} value={project.id}>
-                            <div className="flex items-center gap-x-2">
+                            <div className={'flex items-center gap-x-2'}>
                               <ProjectAvatar
-                                className="size-6"
+                                className={'size-6'}
                                 name={project.name}
                                 image={project.imageUrl}
                               />

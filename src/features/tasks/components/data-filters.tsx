@@ -1,3 +1,4 @@
+import React from 'react';
 import { useWorkspaceId } from '@/features/workspaces/hooks/use-workspace-id';
 import { useGetProjects } from '@/features/projects/api/use-get-projects';
 import { useGetMembers } from '@/features/members/api/use-get-members';
@@ -44,29 +45,33 @@ const DataFilters = ({ hideProjectFilter }: DataFiltersProps) => {
   const onStatusChange = async (value: string) => {
     await setFilters({ status: value == 'all' ? null : (value as TaskStatus) });
   };
+
   const onAssigneeChange = async (value: string) => {
     await setFilters({ assigneeId: value == 'all' ? null : (value as string) });
   };
+
   const onProjectChange = async (value: string) => {
     await setFilters({ projectId: value == 'all' ? null : (value as string) });
   };
+
   if (isLoading) return null;
+
   return (
-    <div className="flex flex-col gap-2 lg:flex-row">
+    <div className={'flex flex-col gap-2 lg:flex-row'}>
       <Select
         defaultValue={status ?? undefined}
         onValueChange={(value) => onStatusChange(value)}
       >
-        <SelectTrigger className="h-8 w-full lg:w-auto">
-          <div className="flex items-center pr-2">
-            <ListCheckIcon className="mr-2 size-4" />
-            <SelectValue placeholder="所有状态" />
+        <SelectTrigger className={'h-8 w-full lg:w-auto'}>
+          <div className={'flex items-center pr-2'}>
+            <ListCheckIcon className={'mr-2 size-4'} />
+            <SelectValue placeholder={'所有状态'} />
           </div>
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">所有状态</SelectItem>
+          <SelectItem value={'all'}>所有状态</SelectItem>
           <SelectSeparator />
-          <SelectItem value={TaskStatus.BACKLOG}>待办列表</SelectItem>
+          <SelectItem value={TaskStatus.BACKLOG}>待办</SelectItem>
           <SelectItem value={TaskStatus.IN_PROGRESS}>进行中</SelectItem>
           <SelectItem value={TaskStatus.IN_REVIEW}>审核中</SelectItem>
           <SelectItem value={TaskStatus.TODO}>未完成</SelectItem>
@@ -77,14 +82,14 @@ const DataFilters = ({ hideProjectFilter }: DataFiltersProps) => {
         defaultValue={assigneeId ?? undefined}
         onValueChange={(value) => onProjectChange(value)}
       >
-        <SelectTrigger className="h-8 w-full lg:w-auto">
-          <div className="flex items-center pr-2">
-            <UserIcon className="mr-2 size-4" />
-            <SelectValue placeholder="所有代理人" />
+        <SelectTrigger className={'h-8 w-full lg:w-auto'}>
+          <div className={'flex items-center pr-2'}>
+            <UserIcon className={'mr-2 size-4'} />
+            <SelectValue placeholder={'所有代理人'} />
           </div>
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">所有代理人</SelectItem>
+          <SelectItem value={'all'}>所有代理人</SelectItem>
           <SelectSeparator />
           {memberOptions?.map((member) => (
             <SelectItem key={member.value} value={member.value}>
@@ -97,14 +102,14 @@ const DataFilters = ({ hideProjectFilter }: DataFiltersProps) => {
         defaultValue={projectId ?? undefined}
         onValueChange={(value) => onAssigneeChange(value)}
       >
-        <SelectTrigger className="h-8 w-full lg:w-auto">
-          <div className="flex items-center pr-2">
-            <FolderIcon className="mr-2 size-4" />
-            <SelectValue placeholder="所有项目" />
+        <SelectTrigger className={'h-8 w-full lg:w-auto'}>
+          <div className={'flex items-center pr-2'}>
+            <FolderIcon className={'mr-2 size-4'} />
+            <SelectValue placeholder={'所有项目'} />
           </div>
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">所有项目</SelectItem>
+          <SelectItem value={'all'}>所有项目</SelectItem>
           <SelectSeparator />
           {projectOptions?.map((project) => (
             <SelectItem key={project.value} value={project.value}>
@@ -114,7 +119,7 @@ const DataFilters = ({ hideProjectFilter }: DataFiltersProps) => {
         </SelectContent>
       </Select>
       <DatePicker
-        placeholder="截止日期"
+        placeholder={'截止日期'}
         className={'h-8 w-full lg:w-auto'}
         value={dueDate ? new Date(dueDate) : undefined}
         onChange={async (date) => {
