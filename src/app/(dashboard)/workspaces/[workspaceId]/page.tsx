@@ -9,9 +9,7 @@ const WorkspaceIdPage = async () => {
     redirect('/sign-in');
   }
 
-  return (
-    <div>工作区ID页面</div>
-  );
+  return <div>工作区ID页面</div>;
 };
 
 export default WorkspaceIdPage;

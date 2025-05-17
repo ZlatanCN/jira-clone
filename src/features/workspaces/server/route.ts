@@ -18,107 +18,33 @@ import { getMember } from '@/features/members/utils';
 import { z } from 'zod';
 import { Workspace } from '@/features/workspaces/types';
 
-const app = new Hono().get('/', sessionMiddleware, async (c) => {
-  const user = c.get('user');
-  const databases = c.get('databases');
+const app = new Hono()
+  .get('/', sessionMiddleware, async (c) => {
+    const user = c.get('user');
+    const databases = c.get('databases');
 
-  // 获取当前用户的工作区
-  const members = await databases.listDocuments(
-    DATABASE_ID,
-    MEMBERS_ID,
-    [Query.equal('userId', user.$id)],
-  );
+    // 获取当前用户的工作区
+    const members = await databases.listDocuments(DATABASE_ID, MEMBERS_ID, [
+      Query.equal('userId', user.$id),
+    ]);
 
-  if (members.total === 0) {
-    return c.json({ data: { documents: [], total: 0 } });
-  }
-
-  const workspaceIds = members.documents.map((member) => member.workspaceId);
-
-  const workspaces = await databases.listDocuments(
-    DATABASE_ID,
-    WORKSPACES_ID,
-    [
-      Query.orderDesc('$createdAt'),
-      Query.contains('$id', workspaceIds),
-    ],
-  );
-
-  return c.json({ data: workspaces });
-}).post(
-  '/',
-  zValidator('form', createWorkspaceSchema),
-  sessionMiddleware,
-  async (c) => {
-    const [databases, user, storage] = [
-      c.get('databases'),
-      c.get('user'),
-      c.get('storage')];
-
-    const { name, image } = c.req.valid('form');
-
-    let uploadedImageUrl: string | undefined;
-
-    if (image instanceof File) {
-      const file = await storage.createFile(
-        IMAGES_BUCKET_ID,
-        ID.unique(),
-        image,
-      );
-
-      // getFilePreview() 是付费的功能，所以采用其他的方式获取图片
-      // const arrayBuffer = await storage.getFilePreview(
-      //   IMAGES_BUCKET_ID,
-      //   file.$id,
-      // );
-      //
-      // uploadedImageUrl = `data:image/png;base64,${Buffer.from(arrayBuffer).
-      //   toString('base64')}`;
-
-      const downloadUrl = await storage.getFileDownload(IMAGES_BUCKET_ID,
-        file.$id);
-      uploadedImageUrl = `data:image/png;base64,${Buffer.from(downloadUrl).
-        toString('base64')}`;
+    if (members.total === 0) {
+      return c.json({ data: { documents: [], total: 0 } });
     }
 
-    const workspace = await databases.createDocument(
+    const workspaceIds = members.documents.map((member) => member.workspaceId);
+
+    const workspaces = await databases.listDocuments(
       DATABASE_ID,
       WORKSPACES_ID,
-      ID.unique(),
-      {
-        name,
-        userId: user.$id,
-        imageUrl: uploadedImageUrl,
-        inviteCode: generateInviteCode(8),
-      },
+      [Query.orderDesc('$createdAt'), Query.contains('$id', workspaceIds)],
     );
 
-    // 创建工作区
-    await databases.createDocument(
-      DATABASE_ID,
-      MEMBERS_ID,
-      ID.unique(),
-      {
-        userId: user.$id,
-        workspaceId: workspace.$id,
-        role: MemberRole.ADMIN,
-      },
-    );
-
-    return c.json({ data: workspace });
-  },
-).patch(
-  '/:workspaceId',
-  zValidator('form', updateWorkspaceSchema),
-  sessionMiddleware,
-  async (c) => {
-    const [databases, storage, user] = [
-      c.get('databases'),
-      c.get('storage'),
-      c.get('user')];
-
+    return c.json({ data: workspaces });
+  })
+  .get('/:workspaceId', sessionMiddleware, async (c) => {
+    const [user, databases] = [c.get('user'), c.get('databases')];
     const { workspaceId } = c.req.param();
-    const { name, image } = c.req.valid('form');
 
     const member = await getMember({
       databases,
@@ -126,52 +52,165 @@ const app = new Hono().get('/', sessionMiddleware, async (c) => {
       userId: user.$id,
     });
 
-    if (!member || member.role !== MemberRole.ADMIN) {
+    if (!member) {
       return c.json({ error: '未授权' }, 401);
     }
 
-    let uploadedImageUrl: string | undefined;
-
-    if (image instanceof File) {
-      const file = await storage.createFile(
-        IMAGES_BUCKET_ID,
-        ID.unique(),
-        image,
-      );
-
-      // getFilePreview() 是付费的功能，所以采用其他的方式获取图片
-      // const arrayBuffer = await storage.getFilePreview(
-      //   IMAGES_BUCKET_ID,
-      //   file.$id,
-      // );
-      //
-      // uploadedImageUrl = `data:image/png;base64,${Buffer.from(arrayBuffer).
-      //   toString('base64')}`;
-
-      const downloadUrl = await storage.getFileDownload(IMAGES_BUCKET_ID,
-        file.$id);
-      uploadedImageUrl = `data:image/png;base64,${Buffer.from(downloadUrl).
-        toString('base64')}`;
-    } else {
-      uploadedImageUrl = image;
-    }
-
-    const workspace = await databases.updateDocument(
+    const workspace = await databases.getDocument<Workspace>(
       DATABASE_ID,
       WORKSPACES_ID,
       workspaceId,
-      {
-        name,
-        imageUrl: uploadedImageUrl,
-      },
     );
 
     return c.json({ data: workspace });
-  },
-).delete(
-  '/:workspaceId',
-  sessionMiddleware,
-  async (c) => {
+  })
+  .get('/:workspaceId/info', sessionMiddleware, async (c) => {
+    const databases = c.get('databases');
+    const { workspaceId } = c.req.param();
+
+    const workspace = await databases.getDocument<Workspace>(
+      DATABASE_ID,
+      WORKSPACES_ID,
+      workspaceId,
+    );
+
+    return c.json({
+      data: {
+        $id: workspace.$id,
+        name: workspace.name,
+        imageUrl: workspace.imageUrl,
+      },
+    });
+  })
+  .post(
+    '/',
+    zValidator('form', createWorkspaceSchema),
+    sessionMiddleware,
+    async (c) => {
+      const [databases, user, storage] = [
+        c.get('databases'),
+        c.get('user'),
+        c.get('storage'),
+      ];
+
+      const { name, image } = c.req.valid('form');
+
+      let uploadedImageUrl: string | undefined;
+
+      if (image instanceof File) {
+        const file = await storage.createFile(
+          IMAGES_BUCKET_ID,
+          ID.unique(),
+          image,
+        );
+
+        // getFilePreview() 是付费的功能，所以采用其他的方式获取图片
+        // const arrayBuffer = await storage.getFilePreview(
+        //   IMAGES_BUCKET_ID,
+        //   file.$id,
+        // );
+        //
+        // uploadedImageUrl = `data:image/png;base64,${Buffer.from(arrayBuffer).
+        //   toString('base64')}`;
+
+        const downloadUrl = await storage.getFileDownload(
+          IMAGES_BUCKET_ID,
+          file.$id,
+        );
+        uploadedImageUrl = `data:image/png;base64,${Buffer.from(
+          downloadUrl,
+        ).toString('base64')}`;
+      }
+
+      const workspace = await databases.createDocument(
+        DATABASE_ID,
+        WORKSPACES_ID,
+        ID.unique(),
+        {
+          name,
+          userId: user.$id,
+          imageUrl: uploadedImageUrl,
+          inviteCode: generateInviteCode(8),
+        },
+      );
+
+      // 创建工作区
+      await databases.createDocument(DATABASE_ID, MEMBERS_ID, ID.unique(), {
+        userId: user.$id,
+        workspaceId: workspace.$id,
+        role: MemberRole.ADMIN,
+      });
+
+      return c.json({ data: workspace });
+    },
+  )
+  .patch(
+    '/:workspaceId',
+    zValidator('form', updateWorkspaceSchema),
+    sessionMiddleware,
+    async (c) => {
+      const [databases, storage, user] = [
+        c.get('databases'),
+        c.get('storage'),
+        c.get('user'),
+      ];
+
+      const { workspaceId } = c.req.param();
+      const { name, image } = c.req.valid('form');
+
+      const member = await getMember({
+        databases,
+        workspaceId,
+        userId: user.$id,
+      });
+
+      if (!member || member.role !== MemberRole.ADMIN) {
+        return c.json({ error: '未授权' }, 401);
+      }
+
+      let uploadedImageUrl: string | undefined;
+
+      if (image instanceof File) {
+        const file = await storage.createFile(
+          IMAGES_BUCKET_ID,
+          ID.unique(),
+          image,
+        );
+
+        // getFilePreview() 是付费的功能，所以采用其他的方式获取图片
+        // const arrayBuffer = await storage.getFilePreview(
+        //   IMAGES_BUCKET_ID,
+        //   file.$id,
+        // );
+        //
+        // uploadedImageUrl = `data:image/png;base64,${Buffer.from(arrayBuffer).
+        //   toString('base64')}`;
+
+        const downloadUrl = await storage.getFileDownload(
+          IMAGES_BUCKET_ID,
+          file.$id,
+        );
+        uploadedImageUrl = `data:image/png;base64,${Buffer.from(
+          downloadUrl,
+        ).toString('base64')}`;
+      } else {
+        uploadedImageUrl = image;
+      }
+
+      const workspace = await databases.updateDocument(
+        DATABASE_ID,
+        WORKSPACES_ID,
+        workspaceId,
+        {
+          name,
+          imageUrl: uploadedImageUrl,
+        },
+      );
+
+      return c.json({ data: workspace });
+    },
+  )
+  .delete('/:workspaceId', sessionMiddleware, async (c) => {
     const [databases, user] = [c.get('databases'), c.get('user')];
     const { workspaceId } = c.req.param();
 
@@ -187,18 +226,11 @@ const app = new Hono().get('/', sessionMiddleware, async (c) => {
 
     //TODO: 删除工作区下的所有project、task和member
 
-    await databases.deleteDocument(
-      DATABASE_ID,
-      WORKSPACES_ID,
-      workspaceId,
-    );
+    await databases.deleteDocument(DATABASE_ID, WORKSPACES_ID, workspaceId);
 
     return c.json({ data: { $id: workspaceId } });
-  },
-).post(
-  '/:workspaceId/reset-invite-code',
-  sessionMiddleware,
-  async (c) => {
+  })
+  .post('/:workspaceId/reset-invite-code', sessionMiddleware, async (c) => {
     const [databases, user] = [c.get('databases'), c.get('user')];
     const { workspaceId } = c.req.param();
 
@@ -222,49 +254,44 @@ const app = new Hono().get('/', sessionMiddleware, async (c) => {
     );
 
     return c.json({ data: workspace });
-  },
-).post(
-  '/:workspaceId/join',
-  sessionMiddleware,
-  zValidator('json', z.object({ code: z.string() })),
-  async (c) => {
-    const { workspaceId } = c.req.param();
-    const { code } = c.req.valid('json');
-    const [databases, user] = [c.get('databases'), c.get('user')];
+  })
+  .post(
+    '/:workspaceId/join',
+    sessionMiddleware,
+    zValidator('json', z.object({ code: z.string() })),
+    async (c) => {
+      const { workspaceId } = c.req.param();
+      const { code } = c.req.valid('json');
+      const [databases, user] = [c.get('databases'), c.get('user')];
 
-    const member = await getMember({
-      databases,
-      workspaceId,
-      userId: user.$id,
-    });
+      const member = await getMember({
+        databases,
+        workspaceId,
+        userId: user.$id,
+      });
 
-    if (member) {
-      return c.json({ error: '已经是一名成员' }, 400);
-    }
+      if (member) {
+        return c.json({ error: '已经是一名成员' }, 400);
+      }
 
-    const workspace = await databases.getDocument<Workspace>(
-      DATABASE_ID,
-      WORKSPACES_ID,
-      workspaceId,
-    );
+      const workspace = await databases.getDocument<Workspace>(
+        DATABASE_ID,
+        WORKSPACES_ID,
+        workspaceId,
+      );
 
-    if (workspace.inviteCode !== code) {
-      return c.json({ error: '邀请码错误' }, 400);
-    }
+      if (workspace.inviteCode !== code) {
+        return c.json({ error: '邀请码错误' }, 400);
+      }
 
-    await databases.createDocument(
-      DATABASE_ID,
-      MEMBERS_ID,
-      ID.unique(),
-      {
+      await databases.createDocument(DATABASE_ID, MEMBERS_ID, ID.unique(), {
         workspaceId,
         userId: user.$id,
         role: MemberRole.MEMBER,
-      },
-    );
+      });
 
-    return c.json({ data: workspace });
-  },
-);
+      return c.json({ data: workspace });
+    },
+  );
 
 export default app;

@@ -35,10 +35,8 @@ interface EditProjectFormProps {
 const EditProjectForm = ({ onCancel, initialValues }: EditProjectFormProps) => {
   const router = useRouter();
   const { mutate, isPending } = useUpdateProject();
-  const {
-    mutate: deleteProject,
-    isPending: isDeletingProject,
-  } = useDeleteProject();
+  const { mutate: deleteProject, isPending: isDeletingProject } =
+    useDeleteProject();
   const inputRef = useRef<HTMLInputElement>(null);
   const form = useForm<z.infer<typeof updateProjectSchema>>({
     resolver: zodResolver(updateProjectSchema),
@@ -59,11 +57,7 @@ const EditProjectForm = ({ onCancel, initialValues }: EditProjectFormProps) => {
       image: values.image instanceof File ? values.image : '',
     };
 
-    mutate({ form: finalValues, param: { projectId: initialValues.$id } }, {
-      onSuccess: () => {
-        form.reset();
-      },
-    });
+    mutate({ form: finalValues, param: { projectId: initialValues.$id } });
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,21 +75,24 @@ const EditProjectForm = ({ onCancel, initialValues }: EditProjectFormProps) => {
       return;
     }
 
-    deleteProject({
-      param: { projectId: initialValues.$id },
-    }, {
-      onSuccess: () => {
-        window.location.href = `/workspaces/${initialValues.workspaceId}`;
+    deleteProject(
+      {
+        param: { projectId: initialValues.$id },
       },
-    });
+      {
+        onSuccess: () => {
+          window.location.href = `/workspaces/${initialValues.workspaceId}`;
+        },
+      },
+    );
   };
 
   return (
     <div className={'flex flex-col gap-y-4'}>
-      <DeleteDialog/>
-      <Card className={'w-full h-full border-none shadow-none'}>
+      <DeleteDialog />
+      <Card className={'h-full w-full border-none shadow-none'}>
         <CardHeader
-          className={'flex flex-row items-center gap-x-4 p-7 space-y-0'}
+          className={'flex flex-row items-center gap-x-4 space-y-0 p-7'}
         >
           <Button
             size={'sm'}
@@ -103,12 +100,13 @@ const EditProjectForm = ({ onCancel, initialValues }: EditProjectFormProps) => {
             onClick={
               onCancel
                 ? onCancel
-                : () => router.push(
-                  `/workspaces/${initialValues.workspaceId}/projects/${initialValues.$id}`,
-                )
+                : () =>
+                    router.push(
+                      `/workspaces/${initialValues.workspaceId}/projects/${initialValues.$id}`,
+                    )
             }
           >
-            <ArrowLeftIcon className={'size-4 mr-2'}/>
+            <ArrowLeftIcon className={'mr-2 size-4'} />
             返回
           </Button>
           <CardTitle className={'text-xl font-bold'}>
@@ -116,22 +114,22 @@ const EditProjectForm = ({ onCancel, initialValues }: EditProjectFormProps) => {
           </CardTitle>
         </CardHeader>
         <div className={'px-7'}>
-          <DottedSeparator/>
+          <DottedSeparator />
         </div>
         <CardContent className={'p-7'}>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <div className={'flex flex-col gap-y-4'}>
                 <FormField
-                  name="name"
+                  name={'name'}
                   control={form.control}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>项目名称</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder={'请输入项目名称'}/>
+                        <Input {...field} placeholder={'请输入项目名称'} />
                       </FormControl>
-                      <FormMessage/>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -143,7 +141,9 @@ const EditProjectForm = ({ onCancel, initialValues }: EditProjectFormProps) => {
                       <div className={'flex items-center gap-x-5'}>
                         {field.value ? (
                           <div
-                            className={'size-[72px] relative rounded-md overflow-hidden'}
+                            className={
+                              'relative size-[72px] overflow-hidden rounded-md'
+                            }
                           >
                             <Image
                               src={
@@ -190,7 +190,7 @@ const EditProjectForm = ({ onCancel, initialValues }: EditProjectFormProps) => {
                                   inputRef.current.value = '';
                                 }
                               }}
-                              className={'w-fit mt-2'}
+                              className={'mt-2 w-fit'}
                             >
                               移除图标
                             </Button>
@@ -201,7 +201,7 @@ const EditProjectForm = ({ onCancel, initialValues }: EditProjectFormProps) => {
                               variant={'teritary'}
                               disabled={isPending}
                               onClick={() => inputRef.current?.click()}
-                              className={'w-fit mt-2'}
+                              className={'mt-2 w-fit'}
                             >
                               上传图标
                             </Button>
@@ -212,8 +212,8 @@ const EditProjectForm = ({ onCancel, initialValues }: EditProjectFormProps) => {
                   )}
                 />
               </div>
-              <DottedSeparator className={'py-7'}/>
-              <div className={'flex justify-between items-center'}>
+              <DottedSeparator className={'py-7'} />
+              <div className={'flex items-center justify-between'}>
                 <Button
                   type={'button'}
                   size={'lg'}
@@ -237,21 +237,21 @@ const EditProjectForm = ({ onCancel, initialValues }: EditProjectFormProps) => {
           </Form>
         </CardContent>
       </Card>
-      <Card className={'w-full h-full border-none shadow-none'}>
+      <Card className={'h-full w-full border-none shadow-none'}>
         <CardContent className={'p-7'}>
           <div className={'flex flex-col'}>
             <h3 className={'font-bold'}>危险区域</h3>
             <p className={'text-sm text-muted-foreground'}>
               删除一个项目是不可逆操作，并且会清除所有相关数据
             </p>
-            <DottedSeparator className={'py-7'}/>
+            <DottedSeparator className={'py-7'} />
             <Button
               size={'sm'}
               variant={'destructive'}
               type={'button'}
               disabled={isPending || isDeletingProject}
               onClick={handleDelete}
-              className={'mt-6 w-fit ml-auto'}
+              className={'ml-auto mt-6 w-fit'}
             >
               删除项目
             </Button>

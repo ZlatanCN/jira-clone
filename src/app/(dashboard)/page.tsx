@@ -2,7 +2,7 @@ import { getCurrent } from '@/features/auth/queries';
 import { redirect } from 'next/navigation';
 import { getWorkspaces } from '@/features/workspaces/queries';
 
-export default async function Home () {
+export default async function Home() {
   const user = await getCurrent();
 
   if (!user) {
@@ -10,6 +10,7 @@ export default async function Home () {
   }
 
   const workspaces = await getWorkspaces();
+
   if (workspaces.total === 0) {
     redirect('/workspaces/create');
   } else {

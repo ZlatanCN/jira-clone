@@ -6,7 +6,6 @@ import {
 import { InferRequestType, InferResponseType } from 'hono';
 import { client } from '@/lib/rpc';
 import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
 
 type ResponseType = InferResponseType<
   (typeof client.api.tasks)[':taskId']['$delete'],
@@ -19,7 +18,6 @@ type RequestType = InferRequestType<
 const useDeleteTask = (
   options?: UseMutationOptions<ResponseType, Error, RequestType>,
 ) => {
-  const router = useRouter();
   const queryClient = useQueryClient();
 
   return useMutation<ResponseType, Error, RequestType>({
@@ -35,7 +33,6 @@ const useDeleteTask = (
     onSuccess: async ({ data }) => {
       toast.success('任务删除成功');
 
-      router.refresh();
       await queryClient.invalidateQueries({ queryKey: ['tasks'] });
       await queryClient.invalidateQueries({ queryKey: ['task', data.$id] });
     },

@@ -2,7 +2,6 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { InferRequestType, InferResponseType } from 'hono';
 import { client } from '@/lib/rpc';
 import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
 
 type ResponseType = InferResponseType<
   (typeof client.api.tasks)[':taskId']['$patch'],
@@ -14,7 +13,6 @@ type RequestType = InferRequestType<
 
 const useUpdateTask = () => {
   const queryClient = useQueryClient();
-  const router = useRouter();
 
   return useMutation<ResponseType, Error, RequestType>({
     mutationFn: async ({ json, param }) => {
@@ -31,7 +29,6 @@ const useUpdateTask = () => {
     },
     onSuccess: async ({ data }) => {
       toast.success('任务更新成功');
-      router.refresh();
       await queryClient.invalidateQueries({ queryKey: ['tasks'] });
       await queryClient.invalidateQueries({ queryKey: ['task', data.$id] });
     },

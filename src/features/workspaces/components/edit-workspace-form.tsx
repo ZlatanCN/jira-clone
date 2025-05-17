@@ -23,17 +23,11 @@ import Image from 'next/image';
 import { ArrowLeftIcon, CopyIcon, ImageIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Workspace } from '@/features/workspaces/types';
-import {
-  useUpdateWorkspace,
-} from '@/features/workspaces/api/use-update-workspace';
+import { useUpdateWorkspace } from '@/features/workspaces/api/use-update-workspace';
 import { useConfirm } from '@/hooks/use-confirm';
-import {
-  useDeleteWorkspace,
-} from '@/features/workspaces/api/use-delete-workspace';
+import { useDeleteWorkspace } from '@/features/workspaces/api/use-delete-workspace';
 import { toast } from 'sonner';
-import {
-  useResetInviteCode,
-} from '@/features/workspaces/api/use-reset-invite-code';
+import { useResetInviteCode } from '@/features/workspaces/api/use-reset-invite-code';
 
 interface EditWorkspaceFormProps {
   onCancel?: () => void;
@@ -46,14 +40,10 @@ const EditWorkspaceForm = ({
 }: EditWorkspaceFormProps) => {
   const router = useRouter();
   const { mutate, isPending } = useUpdateWorkspace();
-  const {
-    mutate: deleteWorkspace,
-    isPending: isDeletingWorkspace,
-  } = useDeleteWorkspace();
-  const {
-    mutate: resetInviteCode,
-    isPending: isResettingInviteCode,
-  } = useResetInviteCode();
+  const { mutate: deleteWorkspace, isPending: isDeletingWorkspace } =
+    useDeleteWorkspace();
+  const { mutate: resetInviteCode, isPending: isResettingInviteCode } =
+    useResetInviteCode();
   const inputRef = useRef<HTMLInputElement>(null);
   const form = useForm<z.infer<typeof updateWorkspaceSchema>>({
     resolver: zodResolver(updateWorkspaceSchema),
@@ -81,11 +71,7 @@ const EditWorkspaceForm = ({
       image: values.image instanceof File ? values.image : '',
     };
 
-    mutate({ form: finalValues, param: { workspaceId: initialValues.$id } }, {
-      onSuccess: () => {
-        form.reset();
-      },
-    });
+    mutate({ form: finalValues, param: { workspaceId: initialValues.$id } });
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -103,13 +89,16 @@ const EditWorkspaceForm = ({
       return;
     }
 
-    deleteWorkspace({
-      param: { workspaceId: initialValues.$id },
-    }, {
-      onSuccess: () => {
-        window.location.href = '/';
+    deleteWorkspace(
+      {
+        param: { workspaceId: initialValues.$id },
       },
-    });
+      {
+        onSuccess: () => {
+          window.location.href = '/';
+        },
+      },
+    );
   };
 
   const handleCopyInviteLink = async () => {
@@ -134,9 +123,9 @@ const EditWorkspaceForm = ({
     <div className={'flex flex-col gap-y-4'}>
       <DeleteDialog />
       <ResetDialog />
-      <Card className={'w-full h-full border-none shadow-none'}>
+      <Card className={'h-full w-full border-none shadow-none'}>
         <CardHeader
-          className={'flex flex-row items-center gap-x-4 p-7 space-y-0'}
+          className={'flex flex-row items-center gap-x-4 space-y-0 p-7'}
         >
           <Button
             size={'sm'}
@@ -147,7 +136,7 @@ const EditWorkspaceForm = ({
                 : () => router.push(`/workspaces/${initialValues.$id}`)
             }
           >
-            <ArrowLeftIcon className={'size-4 mr-2'} />
+            <ArrowLeftIcon className={'mr-2 size-4'} />
             返回
           </Button>
           <CardTitle className={'text-xl font-bold'}>
@@ -162,7 +151,7 @@ const EditWorkspaceForm = ({
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <div className={'flex flex-col gap-y-4'}>
                 <FormField
-                  name="name"
+                  name={'name'}
                   control={form.control}
                   render={({ field }) => (
                     <FormItem>
@@ -182,7 +171,9 @@ const EditWorkspaceForm = ({
                       <div className={'flex items-center gap-x-5'}>
                         {field.value ? (
                           <div
-                            className={'size-[72px] relative rounded-md overflow-hidden'}
+                            className={
+                              'relative size-[72px] overflow-hidden rounded-md'
+                            }
                           >
                             <Image
                               src={
@@ -229,7 +220,7 @@ const EditWorkspaceForm = ({
                                   inputRef.current.value = '';
                                 }
                               }}
-                              className={'w-fit mt-2'}
+                              className={'mt-2 w-fit'}
                             >
                               移除图标
                             </Button>
@@ -240,7 +231,7 @@ const EditWorkspaceForm = ({
                               variant={'teritary'}
                               disabled={isPending}
                               onClick={() => inputRef.current?.click()}
-                              className={'w-fit mt-2'}
+                              className={'mt-2 w-fit'}
                             >
                               上传图标
                             </Button>
@@ -252,7 +243,7 @@ const EditWorkspaceForm = ({
                 />
               </div>
               <DottedSeparator className={'py-7'} />
-              <div className={'flex justify-between items-center'}>
+              <div className={'flex items-center justify-between'}>
                 <Button
                   type={'button'}
                   size={'lg'}
@@ -276,7 +267,7 @@ const EditWorkspaceForm = ({
           </Form>
         </CardContent>
       </Card>
-      <Card className={'w-full h-full border-none shadow-none'}>
+      <Card className={'h-full w-full border-none shadow-none'}>
         <CardContent className={'p-7'}>
           <div className={'flex flex-col'}>
             <h3 className={'font-bold'}>邀请成员</h3>
@@ -302,14 +293,14 @@ const EditWorkspaceForm = ({
               type={'button'}
               disabled={isPending || isResettingInviteCode}
               onClick={handleResetInviteCode}
-              className={'mt-6 w-fit ml-auto'}
+              className={'ml-auto mt-6 w-fit'}
             >
               重置邀请链接
             </Button>
           </div>
         </CardContent>
       </Card>
-      <Card className={'w-full h-full border-none shadow-none'}>
+      <Card className={'h-full w-full border-none shadow-none'}>
         <CardContent className={'p-7'}>
           <div className={'flex flex-col'}>
             <h3 className={'font-bold'}>危险区域</h3>
@@ -323,7 +314,7 @@ const EditWorkspaceForm = ({
               type={'button'}
               disabled={isPending || isDeletingWorkspace}
               onClick={handleDelete}
-              className={'mt-6 w-fit ml-auto'}
+              className={'ml-auto mt-6 w-fit'}
             >
               删除工作区
             </Button>
