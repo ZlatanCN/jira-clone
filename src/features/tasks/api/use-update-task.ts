@@ -33,7 +33,7 @@ const useUpdateTask = () => {
       toast.success('任务更新成功');
       router.refresh();
       await queryClient.invalidateQueries({ queryKey: ['tasks'] });
-      await queryClient.invalidateQueries({ queryKey: ['tasks', data.$id] });
+      await queryClient.invalidateQueries({ queryKey: ['task', data.$id] });
     },
     onError: () => {
       toast.error('任务更新失败');

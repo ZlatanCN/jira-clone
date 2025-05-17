@@ -1,4 +1,8 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+  useMutation,
+  UseMutationOptions,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { InferRequestType, InferResponseType } from 'hono';
 import { client } from '@/lib/rpc';
 import { toast } from 'sonner';
@@ -12,7 +16,9 @@ type RequestType = InferRequestType<
   (typeof client.api.tasks)[':taskId']['$delete']
 >;
 
-const useDeleteTask = () => {
+const useDeleteTask = (
+  options?: UseMutationOptions<ResponseType, Error, RequestType>,
+) => {
   const router = useRouter();
   const queryClient = useQueryClient();
 
@@ -31,11 +37,12 @@ const useDeleteTask = () => {
 
       router.refresh();
       await queryClient.invalidateQueries({ queryKey: ['tasks'] });
-      await queryClient.invalidateQueries({ queryKey: ['tasks', data.$id] });
+      await queryClient.invalidateQueries({ queryKey: ['task', data.$id] });
     },
     onError: () => {
       toast.error('任务删除失败');
     },
+    ...options,
   });
 };
 

@@ -33,7 +33,6 @@ export function DataTable<TData, TValue>({
   data,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
   );
@@ -54,17 +53,17 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      {/*<div className="flex items-center py-4">*/}
+      {/*<div className={'flex items-center py-4'}>*/}
       {/*  <Input*/}
-      {/*    placeholder="筛选任务"*/}
+      {/*    placeholder={'筛选任务'}*/}
       {/*    value={(table.getColumn('email')?.getFilterValue() as string) ?? ''}*/}
       {/*    onChange={(event) =>*/}
       {/*      table.getColumn('email')?.setFilterValue(event.target.value)*/}
       {/*    }*/}
-      {/*    className="max-w-sm"*/}
+      {/*    className={'max-w-sm'}*/}
       {/*  />*/}
       {/*</div>*/}
-      <div className="rounded-md border">
+      <div className={'rounded-md border'}>
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -105,31 +104,31 @@ export function DataTable<TData, TValue>({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center"
+                  className={'h-24 text-center'}
                 >
-                  No results.
+                  没有结果
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
+      <div className={'flex items-center justify-end space-x-2 py-4'}>
         <Button
-          variant="outline"
-          size="sm"
+          variant={'outline'}
+          size={'sm'}
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
         >
-          Previous
+          上一个
         </Button>
         <Button
-          variant="outline"
-          size="sm"
+          variant={'outline'}
+          size={'sm'}
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
         >
-          Next
+          下一个
         </Button>
       </div>
     </div>

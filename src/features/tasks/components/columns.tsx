@@ -17,18 +17,18 @@ const columns: ColumnDef<Task>[] = [
     header: ({ column }) => {
       return (
         <Button
-          variant="ghost"
+          variant={'ghost'}
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           任务名称
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <ArrowUpDown className={'ml-2 h-4 w-4'} />
         </Button>
       );
     },
     cell: ({ row }) => {
       const name = row.original.name;
 
-      return <p className="line-clamp-1">{name}</p>;
+      return <p className={'line-clamp-1'}>{name}</p>;
     },
   },
   {
@@ -36,24 +36,24 @@ const columns: ColumnDef<Task>[] = [
     header: ({ column }) => {
       return (
         <Button
-          variant="ghost"
+          variant={'ghost'}
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           项目
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <ArrowUpDown className={'ml-2 h-4 w-4'} />
         </Button>
       );
     },
     cell: ({ row }) => {
       const project = row.original.project;
       return (
-        <div className="flex items-center gap-x-2 text-sm font-medium">
+        <div className={'flex items-center gap-x-2 text-sm font-medium'}>
           <ProjectAvatar
-            className="size-6"
+            className={'size-6'}
             name={project?.name}
             image={project?.imageUrl}
           />
-          <p className="line-clamp-1">{project?.name}</p>
+          <p className={'line-clamp-1'}>{project?.name}</p>
         </div>
       );
     },
@@ -63,20 +63,20 @@ const columns: ColumnDef<Task>[] = [
     header: ({ column }) => {
       return (
         <Button
-          variant="ghost"
+          variant={'ghost'}
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           代理人
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <ArrowUpDown className={'ml-2 h-4 w-4'} />
         </Button>
       );
     },
     cell: ({ row }) => {
       const assignee = row.original.assignee;
       return (
-        <div className="flex items-center gap-x-2 text-sm font-medium">
+        <div className={'flex items-center gap-x-2 text-sm font-medium'}>
           <MemberAvatar
-            className="size-6"
+            className={'size-6'}
             fallbackClassName={'text-xs'}
             name={assignee.name}
           />
@@ -90,11 +90,11 @@ const columns: ColumnDef<Task>[] = [
     header: ({ column }) => {
       return (
         <Button
-          variant="ghost"
+          variant={'ghost'}
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           截止日期
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <ArrowUpDown className={'ml-2 h-4 w-4'} />
         </Button>
       );
     },
@@ -108,11 +108,11 @@ const columns: ColumnDef<Task>[] = [
     header: ({ column }) => {
       return (
         <Button
-          variant="ghost"
+          variant={'ghost'}
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           状态
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <ArrowUpDown className={'ml-2 h-4 w-4'} />
         </Button>
       );
     },

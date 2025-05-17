@@ -43,14 +43,17 @@ const DataFilters = ({ hideProjectFilter }: DataFiltersProps) => {
     useTaskFilters();
 
   const onStatusChange = async (value: string) => {
+    console.log('status', value);
     await setFilters({ status: value == 'all' ? null : (value as TaskStatus) });
   };
 
   const onAssigneeChange = async (value: string) => {
+    console.log('assigneeId', value);
     await setFilters({ assigneeId: value == 'all' ? null : (value as string) });
   };
 
   const onProjectChange = async (value: string) => {
+    console.log('projectId', value);
     await setFilters({ projectId: value == 'all' ? null : (value as string) });
   };
 
@@ -80,7 +83,7 @@ const DataFilters = ({ hideProjectFilter }: DataFiltersProps) => {
       </Select>
       <Select
         defaultValue={assigneeId ?? undefined}
-        onValueChange={(value) => onProjectChange(value)}
+        onValueChange={(value) => onAssigneeChange(value)}
       >
         <SelectTrigger className={'h-8 w-full lg:w-auto'}>
           <div className={'flex items-center pr-2'}>
@@ -98,26 +101,28 @@ const DataFilters = ({ hideProjectFilter }: DataFiltersProps) => {
           ))}
         </SelectContent>
       </Select>
-      <Select
-        defaultValue={projectId ?? undefined}
-        onValueChange={(value) => onAssigneeChange(value)}
-      >
-        <SelectTrigger className={'h-8 w-full lg:w-auto'}>
-          <div className={'flex items-center pr-2'}>
-            <FolderIcon className={'mr-2 size-4'} />
-            <SelectValue placeholder={'所有项目'} />
-          </div>
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value={'all'}>所有项目</SelectItem>
-          <SelectSeparator />
-          {projectOptions?.map((project) => (
-            <SelectItem key={project.value} value={project.value}>
-              {project.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      {!hideProjectFilter && (
+        <Select
+          defaultValue={projectId ?? undefined}
+          onValueChange={(value) => onProjectChange(value)}
+        >
+          <SelectTrigger className={'h-8 w-full lg:w-auto'}>
+            <div className={'flex items-center pr-2'}>
+              <FolderIcon className={'mr-2 size-4'} />
+              <SelectValue placeholder={'所有项目'} />
+            </div>
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={'all'}>所有项目</SelectItem>
+            <SelectSeparator />
+            {projectOptions?.map((project) => (
+              <SelectItem key={project.value} value={project.value}>
+                {project.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      )}
       <DatePicker
         placeholder={'截止日期'}
         className={'h-8 w-full lg:w-auto'}

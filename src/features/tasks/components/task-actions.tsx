@@ -44,30 +44,30 @@ const TaskActions = ({ id, projectId, children }: TaskActionsProps) => {
   };
 
   return (
-    <div className="flex justify-end">
+    <div className={'flex justify-end'}>
       <ConfirmDialog />
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-48">
+        <DropdownMenuContent align={'end'} className={'w-48'}>
           <DropdownMenuItem
             onClick={onOpenTask}
             className={'p-[10px] font-medium'}
           >
-            <ExternalLinkIcon className="mr-2 h-4 w-4 stroke-2" />
+            <ExternalLinkIcon className={'mr-2 h-4 w-4 stroke-2'} />
             任务细节
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={onOpenProject}
             className={'p-[10px] font-medium'}
           >
-            <ExternalLinkIcon className="mr-2 h-4 w-4 stroke-2" />
+            <ExternalLinkIcon className={'mr-2 h-4 w-4 stroke-2'} />
             打开项目
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => open(id)}
             className={'p-[10px] font-medium'}
           >
-            <PencilIcon className="mr-2 h-4 w-4 stroke-2" />
+            <PencilIcon className={'mr-2 h-4 w-4 stroke-2'} />
             编辑任务
           </DropdownMenuItem>
           <DropdownMenuItem
@@ -77,7 +77,7 @@ const TaskActions = ({ id, projectId, children }: TaskActionsProps) => {
               'p-[10px] font-medium text-amber-700 focus:text-amber-700'
             }
           >
-            <TrashIcon className="mr-2 h-4 w-4 stroke-2" />
+            <TrashIcon className={'mr-2 h-4 w-4 stroke-2'} />
             删除任务
           </DropdownMenuItem>
         </DropdownMenuContent>

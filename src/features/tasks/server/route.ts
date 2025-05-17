@@ -15,7 +15,11 @@ const app = new Hono()
     const [user, databases] = [c.get('user'), c.get('databases')];
     const { taskId } = c.req.param();
 
-    const task = await databases.getDocument(DATABASE_ID, TASKS_ID, taskId);
+    const task = await databases.getDocument<Task>(
+      DATABASE_ID,
+      TASKS_ID,
+      taskId,
+    );
 
     const member = await getMember({
       databases,

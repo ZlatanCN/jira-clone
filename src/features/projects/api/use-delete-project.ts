@@ -4,22 +4,23 @@ import { client } from '@/lib/rpc';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 
-type ResponseType = InferResponseType<typeof client.api.projects[':projectId']['$delete'], 200>;
-type RequestType = InferRequestType<typeof client.api.projects[':projectId']['$delete']>;
+type ResponseType = InferResponseType<
+  (typeof client.api.projects)[':projectId']['$delete'],
+  200
+>;
+type RequestType = InferRequestType<
+  (typeof client.api.projects)[':projectId']['$delete']
+>;
 
 const useDeleteProject = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  return useMutation<
-    ResponseType,
-    Error,
-    RequestType
-  >({
+  return useMutation<ResponseType, Error, RequestType>({
     mutationFn: async ({ param }) => {
-      const response = await client.api.projects[':projectId']['$delete'](
-        { param },
-      );
+      const response = await client.api.projects[':projectId']['$delete']({
+        param,
+      });
 
       if (!response.ok) {
         throw new Error('项目删除失败');
