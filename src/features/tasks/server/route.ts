@@ -95,10 +95,8 @@ const app = new Hono()
         query,
       );
 
-      const [projectIds, assigneeIds] = tasks.documents.map((task) => [
-        task.projectId,
-        task.assigneeId,
-      ]);
+      const projectIds = tasks.documents.map((task) => task.projectId);
+      const assigneeIds = tasks.documents.map((task) => task.assigneeId);
 
       const [projects, members] = [
         await databases.listDocuments<Project>(

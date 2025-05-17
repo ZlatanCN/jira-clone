@@ -4,11 +4,9 @@ import { cookies } from 'next/headers';
 import { AUTH_COOKIE } from '@/features/auth/constants';
 
 async function createSessionClient() {
-  const client = new Client().setEndpoint(
-    process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!,
-  ).setProject(
-    process.env.NEXT_PUBLIC_APPWRITE_PROJECT!,
-  );
+  const client = new Client()
+    .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!)
+    .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT!);
 
   const session = cookies().get(AUTH_COOKIE);
 
@@ -36,8 +34,8 @@ async function createSessionClient() {
  */
 async function createAdminClient() {
   // 创建一个新的客户端实例，并设置 Appwrite 的服务地址、项目 ID 和 API 密钥
-  const client = new Client().setEndpoint(
-    process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!) // 设置 Appwrite 服务的端点地址
+  const client = new Client()
+    .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!) // 设置 Appwrite 服务的端点地址
     .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT!) // 设置项目 ID
     .setKey(process.env.NEXT_APPWRITE_KEY!); // 设置管理员 API 密钥
 
@@ -54,7 +52,7 @@ async function createAdminClient() {
     },
     get users() {
       return new Users(client);
-    }
+    },
   };
 }
 

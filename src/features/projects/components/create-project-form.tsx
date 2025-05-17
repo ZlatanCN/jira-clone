@@ -35,7 +35,9 @@ const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
   const { mutate, isPending } = useCreateProject();
   const inputRef = useRef<HTMLInputElement>(null);
   const form = useForm<z.infer<typeof createProjectSchema>>({
-    resolver: zodResolver(createProjectSchema.omit({ workspaceId: true })),
+    resolver: zodResolver(
+      createProjectSchema.omit({ workspaceId: true }),
+    ) as never,
     defaultValues: {
       name: '',
     },
@@ -48,12 +50,15 @@ const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
       image: values.image instanceof File ? values.image : '',
     };
 
-    mutate({ form: finalValues }, {
-      onSuccess: ({ data }) => {
-        form.reset();
-        router.push(`/workspaces/${workspaceId}/projects/${data.$id}`);
+    mutate(
+      { form: finalValues },
+      {
+        onSuccess: ({ data }) => {
+          form.reset();
+          router.push(`/workspaces/${workspaceId}/projects/${data.$id}`);
+        },
       },
-    });
+    );
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,29 +70,27 @@ const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
   };
 
   return (
-    <Card className={'w-full h-full border-none shadow-none'}>
+    <Card className={'h-full w-full border-none shadow-none'}>
       <CardHeader className={'flex p-7'}>
-        <CardTitle className={'text-xl font-bold'}>
-          创建一个新的项目
-        </CardTitle>
+        <CardTitle className={'text-xl font-bold'}>创建一个新的项目</CardTitle>
       </CardHeader>
       <div className={'px-7'}>
-        <DottedSeparator/>
+        <DottedSeparator />
       </div>
       <CardContent className={'p-7'}>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className={'flex flex-col gap-y-4'}>
               <FormField
-                name="name"
+                name={'name'}
                 control={form.control}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>项目名称</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder={'请输入项目名称'}/>
+                      <Input {...field} placeholder={'请输入项目名称'} />
                     </FormControl>
-                    <FormMessage/>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -99,7 +102,9 @@ const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
                     <div className={'flex items-center gap-x-5'}>
                       {field.value ? (
                         <div
-                          className={'size-[72px] relative rounded-md overflow-hidden'}
+                          className={
+                            'relative size-[72px] overflow-hidden rounded-md'
+                          }
                         >
                           <Image
                             src={
@@ -146,7 +151,7 @@ const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
                                 inputRef.current.value = '';
                               }
                             }}
-                            className={'w-fit mt-2'}
+                            className={'mt-2 w-fit'}
                           >
                             移除图标
                           </Button>
@@ -157,7 +162,7 @@ const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
                             variant={'teritary'}
                             disabled={isPending}
                             onClick={() => inputRef.current?.click()}
-                            className={'w-fit mt-2'}
+                            className={'mt-2 w-fit'}
                           >
                             上传图标
                           </Button>
@@ -168,8 +173,8 @@ const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
                 )}
               />
             </div>
-            <DottedSeparator className={'py-7'}/>
-            <div className={'flex justify-between items-center'}>
+            <DottedSeparator className={'py-7'} />
+            <div className={'flex items-center justify-between'}>
               <Button
                 type={'button'}
                 size={'lg'}
