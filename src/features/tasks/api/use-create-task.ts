@@ -21,6 +21,10 @@ const useCreateTask = () => {
     },
     onSuccess: async () => {
       toast.success('任务创建成功');
+      await queryClient.invalidateQueries({ queryKey: ['project-analytics'] });
+      await queryClient.invalidateQueries({
+        queryKey: ['workspace-analytics'],
+      });
       await queryClient.invalidateQueries({ queryKey: ['tasks'] });
     },
     onError: () => {

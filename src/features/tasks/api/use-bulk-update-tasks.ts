@@ -28,6 +28,10 @@ const useBulkUpdateTasks = () => {
     },
     onSuccess: async () => {
       toast.success('任务列表更新成功');
+      await queryClient.invalidateQueries({ queryKey: ['project-analytics'] });
+      await queryClient.invalidateQueries({
+        queryKey: ['workspace-analytics'],
+      });
       await queryClient.invalidateQueries({ queryKey: ['tasks'] });
     },
     onError: () => {
