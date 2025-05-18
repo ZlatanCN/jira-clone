@@ -3,24 +3,25 @@ import { InferRequestType, InferResponseType } from 'hono';
 import { client } from '@/lib/rpc';
 import { toast } from 'sonner';
 
-type ResponseType = InferResponseType<typeof client.api.workspaces[':workspaceId']['join']['$post'], 200>;
-type RequestType = InferRequestType<typeof client.api.workspaces[':workspaceId']['join']['$post']>;
+type ResponseType = InferResponseType<
+  (typeof client.api.workspaces)[':workspaceId']['join']['$post'],
+  200
+>;
+type RequestType = InferRequestType<
+  (typeof client.api.workspaces)[':workspaceId']['join']['$post']
+>;
 
 const useJoinWorkspace = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<
-    ResponseType,
-    Error,
-    RequestType
-  >({
+  return useMutation<ResponseType, Error, RequestType>({
     mutationFn: async ({ param, json }) => {
-      const response = await client.api.workspaces[':workspaceId']['join']['$post'](
-        {
-          param,
-          json,
-        },
-      );
+      const response = await client.api.workspaces[':workspaceId']['join'][
+        '$post'
+      ]({
+        param,
+        json,
+      });
 
       if (!response.ok) {
         throw new Error('工作区加入失败');

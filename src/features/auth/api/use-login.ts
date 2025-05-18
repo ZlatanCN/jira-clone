@@ -4,18 +4,14 @@ import { client } from '@/lib/rpc';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
-type ResponseType = InferResponseType<typeof client.api.auth.login['$post']>;
-type RequestType = InferRequestType<typeof client.api.auth.login['$post']>;
+type ResponseType = InferResponseType<(typeof client.api.auth.login)['$post']>;
+type RequestType = InferRequestType<(typeof client.api.auth.login)['$post']>;
 
 const useLogin = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  return useMutation<
-    ResponseType,
-    Error,
-    RequestType
-  >({
+  return useMutation<ResponseType, Error, RequestType>({
     mutationFn: async ({ json }) => {
       const response = await client.api.auth.login['$post']({ json });
 
@@ -30,7 +26,7 @@ const useLogin = () => {
       router.refresh();
       await queryClient.invalidateQueries({ queryKey: ['current'] });
     },
-    onError: (error) => {
+    onError: () => {
       toast.error(`登录失败`);
     },
   });

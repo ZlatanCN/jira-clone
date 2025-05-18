@@ -6,8 +6,6 @@ import members from '@/features/members/server/route';
 import projects from '@/features/projects/server/route';
 import tasks from '@/features/tasks/server/route';
 
-const runtime = 'edge';
-
 const app = new Hono()
   .basePath('/api')
   .route('/auth', auth)
@@ -23,5 +21,6 @@ const DELETE = handle(app);
 
 type AppType = typeof app;
 
-export { GET, POST, PATCH, DELETE, runtime };
+export const runtime = 'edge';
+export { GET, POST, PATCH, DELETE };
 export type { AppType };

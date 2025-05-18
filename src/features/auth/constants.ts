@@ -1,1 +1,1 @@
-export const AUTH_COOKIE = "admin-session"
+export const AUTH_COOKIE = 'admin-session';

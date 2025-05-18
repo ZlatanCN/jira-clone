@@ -21,14 +21,14 @@ type AdditionalContext = {
     storage: StorageType;
     users: UsersType;
     user: Models.User<Models.Preferences>;
-  }
-}
+  };
+};
 
 const sessionMiddleware = createMiddleware<AdditionalContext>(
   async (c, next) => {
-    const client = new Client().setEndpoint(
-      process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!).
-      setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT!);
+    const client = new Client()
+      .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!)
+      .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT!);
 
     const session = getCookie(c, AUTH_COOKIE);
 
@@ -41,7 +41,8 @@ const sessionMiddleware = createMiddleware<AdditionalContext>(
     const [account, databases, storage] = [
       new Account(client),
       new Databases(client),
-      new Storage(client)];
+      new Storage(client),
+    ];
 
     const user = await account.get();
 

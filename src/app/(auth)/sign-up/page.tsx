@@ -10,9 +10,7 @@ const SignUpPage = async () => {
     redirect('/');
   }
 
-  return (
-    <SignUpCard/>
-  );
+  return <SignUpCard />;
 };
 
 export default SignUpPage;

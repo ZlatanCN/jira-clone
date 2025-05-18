@@ -60,9 +60,11 @@ function Calendar({
         ...classNames,
       }}
       components={{
+        // eslint-disable-next-line react/prop-types
         IconLeft: ({ className, ...props }) => (
           <ChevronLeft className={cn('h-4 w-4', className)} {...props} />
         ),
+        // eslint-disable-next-line react/prop-types
         IconRight: ({ className, ...props }) => (
           <ChevronRight className={cn('h-4 w-4', className)} {...props} />
         ),
@@ -71,6 +73,7 @@ function Calendar({
     />
   );
 }
+
 Calendar.displayName = 'Calendar';
 
 export { Calendar };

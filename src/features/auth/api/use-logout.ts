@@ -4,16 +4,13 @@ import { client } from '@/lib/rpc';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
-type ResponseType = InferResponseType<typeof client.api.auth.logout['$post']>;
+type ResponseType = InferResponseType<(typeof client.api.auth.logout)['$post']>;
 
 const useLogout = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  return useMutation<
-    ResponseType,
-    Error
-  >({
+  return useMutation<ResponseType, Error>({
     mutationFn: async () => {
       const response = await client.api.auth.logout['$post']();
 

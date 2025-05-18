@@ -5,9 +5,7 @@ interface UseGetMembersProps {
   workspaceId: string;
 }
 
-const useGetMembers = ({
-  workspaceId,
-}: UseGetMembersProps) => {
+const useGetMembers = ({ workspaceId }: UseGetMembersProps) => {
   return useQuery({
     queryKey: ['members', workspaceId],
     queryFn: async () => {

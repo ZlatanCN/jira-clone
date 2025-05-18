@@ -3,17 +3,18 @@ import { InferRequestType, InferResponseType } from 'hono';
 import { client } from '@/lib/rpc';
 import { toast } from 'sonner';
 
-type ResponseType = InferResponseType<typeof client.api.members[':memberId']['$patch'], 200>;
-type RequestType = InferRequestType<typeof client.api.members[':memberId']['$patch']>;
+type ResponseType = InferResponseType<
+  (typeof client.api.members)[':memberId']['$patch'],
+  200
+>;
+type RequestType = InferRequestType<
+  (typeof client.api.members)[':memberId']['$patch']
+>;
 
 const useUpdateMember = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<
-    ResponseType,
-    Error,
-    RequestType
-  >({
+  return useMutation<ResponseType, Error, RequestType>({
     mutationFn: async ({ param, json }) => {
       const response = await client.api.members[':memberId']['$patch']({
         param,
