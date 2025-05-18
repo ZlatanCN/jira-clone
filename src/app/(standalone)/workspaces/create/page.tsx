@@ -1,6 +1,4 @@
-import {
-  CreateWorkspaceForm,
-} from '@/features/workspaces/components/create-workspace-form';
+import { CreateWorkspaceForm } from '@/features/workspaces/components/create-workspace-form';
 import { getCurrent } from '@/features/auth/queries';
 import { redirect } from 'next/navigation';
 
@@ -13,7 +11,7 @@ const WorkspaceCreatePage = async () => {
 
   return (
     <div className={'w-full lg:max-w-xl'}>
-      <CreateWorkspaceForm/>
+      <CreateWorkspaceForm />
     </div>
   );
 };

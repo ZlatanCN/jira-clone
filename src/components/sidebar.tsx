@@ -7,16 +7,16 @@ import { Projects } from '@/components/projects';
 
 const Sidebar = () => {
   return (
-    <aside className={'h-full bg-neutral-100 p-4 w-full'}>
+    <aside className={'h-full w-full bg-neutral-100 p-4'}>
       <Link href={'/'}>
-        <Image src={'/logo.svg'} alt={'logo'} width={50} height={50}/>
+        <Image src={'/logo.svg'} alt={'logo'} width={50} height={50} />
       </Link>
-      <DottedSeparator className={'my-4'}/>
-      <WorkspaceSwitcher/>
-      <DottedSeparator className={'my-4'}/>
-      <Navigation/>
-      <DottedSeparator className={'my-4'}/>
-      <Projects/>
+      <DottedSeparator className={'my-4'} />
+      <WorkspaceSwitcher />
+      <DottedSeparator className={'my-4'} />
+      <Navigation />
+      <DottedSeparator className={'my-4'} />
+      <Projects />
     </aside>
   );
 };

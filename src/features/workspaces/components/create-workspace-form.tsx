@@ -6,9 +6,7 @@ import { createWorkspaceSchema } from '@/features/workspaces/schemas';
 import { z } from 'zod';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DottedSeparator } from '@/components/dotted-separator';
-import {
-  useCreateWorkspace,
-} from '@/features/workspaces/api/use-create-workspace';
+import { useCreateWorkspace } from '@/features/workspaces/api/use-create-workspace';
 import { useRouter } from 'next/navigation';
 import {
   Form,
@@ -49,12 +47,15 @@ const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
       image: values.image instanceof File ? values.image : '',
     };
 
-    mutate({ form: finalValues }, {
-      onSuccess: ({ data }) => {
-        form.reset();
-        router.push(`/workspaces/${data.$id}`);
+    mutate(
+      { form: finalValues },
+      {
+        onSuccess: ({ data }) => {
+          form.reset();
+          router.push(`/workspaces/${data.$id}`);
+        },
       },
-    });
+    );
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,29 +67,29 @@ const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
   };
 
   return (
-    <Card className={'w-full h-full border-none shadow-none'}>
+    <Card className={'h-full w-full border-none shadow-none'}>
       <CardHeader className={'flex p-7'}>
         <CardTitle className={'text-xl font-bold'}>
           创建一个新的工作区
         </CardTitle>
       </CardHeader>
       <div className={'px-7'}>
-        <DottedSeparator/>
+        <DottedSeparator />
       </div>
       <CardContent className={'p-7'}>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className={'flex flex-col gap-y-4'}>
               <FormField
-                name="name"
+                name={'name'}
                 control={form.control}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>工作区名称</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder={'请输入工作区名称'}/>
+                      <Input {...field} placeholder={'请输入工作区名称'} />
                     </FormControl>
-                    <FormMessage/>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -100,7 +101,9 @@ const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
                     <div className={'flex items-center gap-x-5'}>
                       {field.value ? (
                         <div
-                          className={'size-[72px] relative rounded-md overflow-hidden'}
+                          className={
+                            'relative size-[72px] overflow-hidden rounded-md'
+                          }
                         >
                           <Image
                             src={
@@ -147,7 +150,7 @@ const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
                                 inputRef.current.value = '';
                               }
                             }}
-                            className={'w-fit mt-2'}
+                            className={'mt-2 w-fit'}
                           >
                             移除图标
                           </Button>
@@ -158,7 +161,7 @@ const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
                             variant={'teritary'}
                             disabled={isPending}
                             onClick={() => inputRef.current?.click()}
-                            className={'w-fit mt-2'}
+                            className={'mt-2 w-fit'}
                           >
                             上传图标
                           </Button>
@@ -169,8 +172,8 @@ const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
                 )}
               />
             </div>
-            <DottedSeparator className={'py-7'}/>
-            <div className={'flex justify-between items-center'}>
+            <DottedSeparator className={'py-7'} />
+            <div className={'flex items-center justify-between'}>
               <Button
                 type={'button'}
                 size={'lg'}

@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss';
+import animate from 'tailwindcss-animate'; // 使用 import 替代 require
 
 const config: Config = {
   darkMode: ['class'],
@@ -60,7 +61,7 @@ const config: Config = {
       },
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [animate], // 使用导入的变量
 };
 
 export default config;

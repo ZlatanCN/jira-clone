@@ -10,9 +10,7 @@ const SignInPage = async () => {
     redirect('/');
   }
 
-  return (
-    <SignInCard/>
-  );
+  return <SignInCard />;
 };
 
 export default SignInPage;

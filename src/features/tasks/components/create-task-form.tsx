@@ -84,7 +84,7 @@ const CreateTaskForm = ({
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className={'flex flex-col gap-y-4'}>
               <FormField
-                name="name"
+                name={'name'}
                 control={form.control}
                 render={({ field }) => (
                   <FormItem>
@@ -97,7 +97,7 @@ const CreateTaskForm = ({
                 )}
               />
               <FormField
-                name="dueDate"
+                name={'dueDate'}
                 control={form.control}
                 render={({ field }) => (
                   <FormItem>
@@ -110,7 +110,7 @@ const CreateTaskForm = ({
                 )}
               />
               <FormField
-                name="assigneeId"
+                name={'assigneeId'}
                 control={form.control}
                 render={({ field }) => (
                   <FormItem>
@@ -121,16 +121,16 @@ const CreateTaskForm = ({
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="选择代理人" />
+                          <SelectValue placeholder={'选择代理人'} />
                         </SelectTrigger>
                       </FormControl>
                       <FormMessage />
                       <SelectContent>
                         {memberOptions.map((member) => (
                           <SelectItem key={member.id} value={member.id}>
-                            <div className="flex items-center gap-x-2">
+                            <div className={'flex items-center gap-x-2'}>
                               <MemberAvatar
-                                className="size-6"
+                                className={'size-6'}
                                 name={member.name}
                               />
                               {member.name}
@@ -143,7 +143,7 @@ const CreateTaskForm = ({
                 )}
               />
               <FormField
-                name="status"
+                name={'status'}
                 control={form.control}
                 render={({ field }) => (
                   <FormItem>
@@ -154,7 +154,7 @@ const CreateTaskForm = ({
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="选择状态" />
+                          <SelectValue placeholder={'选择状态'} />
                         </SelectTrigger>
                       </FormControl>
                       <FormMessage />
@@ -176,7 +176,7 @@ const CreateTaskForm = ({
                 )}
               />
               <FormField
-                name="projectId"
+                name={'projectId'}
                 control={form.control}
                 render={({ field }) => (
                   <FormItem>
@@ -187,16 +187,16 @@ const CreateTaskForm = ({
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="选择项目" />
+                          <SelectValue placeholder={'选择项目'} />
                         </SelectTrigger>
                       </FormControl>
                       <FormMessage />
                       <SelectContent>
                         {projectOptions.map((project) => (
                           <SelectItem key={project.id} value={project.id}>
-                            <div className="flex items-center gap-x-2">
+                            <div className={'flex items-center gap-x-2'}>
                               <ProjectAvatar
-                                className="size-6"
+                                className={'size-6'}
                                 name={project.name}
                                 image={project.imageUrl}
                               />

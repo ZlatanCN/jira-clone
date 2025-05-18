@@ -43,18 +43,18 @@ const SignUpCard = () => {
   };
 
   return (
-    <Card className="w-full h-full md:w-[487px] border-none shadow-none">
-      <CardHeader className="flex items-center justify-center text-center p-7">
-        <CardTitle className="text-2xl">
-          注册
-        </CardTitle>
+    <Card className={'h-full w-full border-none shadow-none md:w-[487px]'}>
+      <CardHeader
+        className={'flex items-center justify-center p-7 text-center'}
+      >
+        <CardTitle className={'text-2xl'}>注册</CardTitle>
         <CardDescription>
           注册表明你已经阅读并同意
-          <Link href="/terms" className="text-blue-500 ml-1">
+          <Link href={'/terms'} className={'ml-1 text-blue-500'}>
             服务条款
-          </Link>
-          {' '}和
-          <Link href="/privacy" className="text-blue-500 ml-1">
+          </Link>{' '}
+          和
+          <Link href={'/privacy'} className={'ml-1 text-blue-500'}>
             隐私政策
           </Link>
         </CardDescription>
@@ -65,100 +65,98 @@ const SignUpCard = () => {
           </Link>
         </CardDescription> */}
       </CardHeader>
-      <div className="px-7">
-        <DottedSeparator/>
+      <div className={'px-7'}>
+        <DottedSeparator />
       </div>
-      <CardContent className="p-7">
+      <CardContent className={'p-7'}>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className={'space-y-4'}>
             <FormField
-              name="name"
+              name={'name'}
               control={form.control}
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
                     <Input
                       {...field}
-                      placeholder="请输入用户名"
-                      type="text"
+                      placeholder={'请输入用户名'}
+                      type={'text'}
                     />
                   </FormControl>
-                  <FormMessage/>
+                  <FormMessage />
                 </FormItem>
               )}
-            >
-            </FormField>
+            ></FormField>
             <FormField
-              name="email"
+              name={'email'}
               control={form.control}
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
                     <Input
                       {...field}
-                      placeholder="请输入邮箱"
-                      type="email"
+                      placeholder={'请输入邮箱'}
+                      type={'email'}
                     />
                   </FormControl>
-                  <FormMessage/>
+                  <FormMessage />
                 </FormItem>
               )}
-            >
-            </FormField>
+            ></FormField>
             <FormField
-              name="password"
+              name={'password'}
               control={form.control}
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
                     <Input
                       {...field}
-                      placeholder="请输入密码"
-                      type="password"
+                      placeholder={'请输入密码'}
+                      type={'password'}
                     />
                   </FormControl>
-                  <FormMessage/>
+                  <FormMessage />
                 </FormItem>
               )}
-            >
-            </FormField>
-            <Button className="w-full" size="lg" disabled={isPending}>
+            ></FormField>
+            <Button className={'w-full'} size={'lg'} disabled={isPending}>
               注册
             </Button>
           </form>
         </Form>
-
       </CardContent>
-      <div className="px-7">
-        <DottedSeparator/>
+      <div className={'px-7'}>
+        <DottedSeparator />
       </div>
-      <CardContent className="p-7 flex flex-col gap-y-4">
+      <CardContent className={'flex flex-col gap-y-4 p-7'}>
         <Button
-          variant="secondary"
-          className="w-full"
-          size="lg"
+          variant={'secondary'}
+          className={'w-full'}
+          size={'lg'}
           disabled={isPending}
         >
-          <FaWeixin className="mr-2 size-5"/>
+          <FaWeixin className={'mr-2 size-5'} />
           微信
         </Button>
         <Button
-          variant="secondary"
-          className="w-full"
-          size="lg"
+          variant={'secondary'}
+          className={'w-full'}
+          size={'lg'}
           disabled={isPending}
         >
-          <SiTencentqq className="mr-2 size-5"/>
+          <SiTencentqq className={'mr-2 size-5'} />
           QQ
         </Button>
       </CardContent>
-      <div className="px-7">
-        <DottedSeparator/>
+      <div className={'px-7'}>
+        <DottedSeparator />
       </div>
-      <CardContent className="p-7 flex items-center justify-center text-center">
+      <CardContent
+        className={'flex items-center justify-center p-7 text-center'}
+      >
         <p>
           已有账号？
-          <Link href="/sign-in" className="text-blue-500">
+          <Link href={'/sign-in'} className={'text-blue-500'}>
             &nbsp;登录
           </Link>
         </p>

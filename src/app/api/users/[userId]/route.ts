@@ -1,6 +1,6 @@
 export function GET(
   request: Request,
-  { params }: { params: { userId: string } }
+  { params }: { params: { userId: string } },
 ) {
-  return Response.json({ userId: params.userId })
+  return Response.json({ userId: params.userId });
 }

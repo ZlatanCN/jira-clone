@@ -6,7 +6,7 @@ import { useWorkspaceId } from '@/features/workspaces/hooks/use-workspace-id';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { useCreateProjectModal } from "@/features/projects/hooks/use-create-project-modal";
+import { useCreateProjectModal } from '@/features/projects/hooks/use-create-project-modal';
 import { ProjectAvatar } from '@/features/projects/components/project-avatar';
 
 const Projects = () => {
@@ -15,12 +15,14 @@ const Projects = () => {
   const { data } = useGetProjects({ workspaceId });
   const { open } = useCreateProjectModal();
   return (
-    <div className="flex flex-col gap-y-2">
-      <div className="flex items-center justify-between">
-        <p className="text-xl text-neutral-500">项目</p>
+    <div className={'flex flex-col gap-y-2'}>
+      <div className={'flex items-center justify-between'}>
+        <p className={'text-xl text-neutral-500'}>项目</p>
         <RiAddCircleFill
           onClick={open}
-          className="size-5 text-neutral-500 cursor-pointer hover:opacity-75 transition"
+          className={
+            'size-5 cursor-pointer text-neutral-500 transition hover:opacity-75'
+          }
         />
       </div>
       {data?.documents.map((project) => {
@@ -31,14 +33,11 @@ const Projects = () => {
           <Link href={href} key={project.$id}>
             <div
               className={cn(
-                'flex items-center gap-2.5 p-2.5 rounded-md hover:opacity-75 transition cursor-pointer text-neutral-500',
-                isActive && 'bg-white shadow-sm hover:opacity-100 text-primary',
+                'flex cursor-pointer items-center gap-2.5 rounded-md p-2.5 text-neutral-500 transition hover:opacity-75',
+                isActive && 'bg-white text-primary shadow-sm hover:opacity-100',
               )}
             >
-              <ProjectAvatar
-                image={project.imageUrl}
-                name={project.name}
-              />
+              <ProjectAvatar image={project.imageUrl} name={project.name} />
               <span className={'truncate'}>{project.name}</span>
             </div>
           </Link>

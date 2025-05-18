@@ -17,7 +17,7 @@ import { useRouter } from 'next/navigation';
 
 interface JoinWorkspaceFormProps {
   initialValues: {
-    name: string
+    name: string;
   };
 }
 
@@ -28,32 +28,35 @@ const JoinWorkspaceForm = ({ initialValues }: JoinWorkspaceFormProps) => {
   const router = useRouter();
 
   const onSubmit = () => {
-    mutate({
-      param: { workspaceId },
-      json: { code: inviteCode },
-    }, {
-      onSuccess: ({ data }) => {
-        router.push(`/workspaces/${data.$id}`);
+    mutate(
+      {
+        param: { workspaceId },
+        json: { code: inviteCode },
       },
-    });
+      {
+        onSuccess: ({ data }) => {
+          router.push(`/workspaces/${data.$id}`);
+        },
+      },
+    );
   };
 
   return (
-    <Card className={'w-full h-full border-none shadow-none'}>
+    <Card className={'h-full w-full border-none shadow-none'}>
       <CardHeader className={'p-7'}>
-        <CardTitle className={'text-xl font-bold'}>
-          加入工作区
-        </CardTitle>
+        <CardTitle className={'text-xl font-bold'}>加入工作区</CardTitle>
         <CardDescription>
           您已被邀请加入<strong>{initialValues.name}</strong>工作区
         </CardDescription>
       </CardHeader>
       <div className={'px-7'}>
-        <DottedSeparator/>
+        <DottedSeparator />
       </div>
       <CardContent className={'p-7'}>
         <div
-          className={'flex flex-col lg:flex-row gap-2 items-center justify-between'}
+          className={
+            'flex flex-col items-center justify-between gap-2 lg:flex-row'
+          }
         >
           <Button
             size={'lg'}
@@ -63,9 +66,7 @@ const JoinWorkspaceForm = ({ initialValues }: JoinWorkspaceFormProps) => {
             disabled={isPending}
             className={'w-full lg:w-fit'}
           >
-            <Link href={'/'}>
-              取消
-            </Link>
+            <Link href={'/'}>取消</Link>
           </Button>
           <Button
             size={'lg'}

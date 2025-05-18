@@ -19,11 +19,11 @@ const MobileSidebar = () => {
     <Sheet modal={false} open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild={true}>
         <Button variant={'secondary'} className={'lg:hidden'}>
-          <MenuIcon className={'size-4 text-neutral-500'}/>
+          <MenuIcon className={'size-4 text-neutral-500'} />
         </Button>
       </SheetTrigger>
       <SheetContent side={'left'} className={'p-0'}>
-        <Sidebar/>
+        <Sidebar />
       </SheetContent>
     </Sheet>
   );
